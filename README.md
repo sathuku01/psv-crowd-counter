@@ -1,3 +1,22 @@
+# PSV Crowd Counter (Prototype)
+
+This is a minimal, well-structured prototype for a bus crowd-counting system.
+
+Run locally:
+
+```bash
+go build ./cmd/crowd-counter
+./crowd-counter
+```
+
+API:
+- `GET /health` — returns status and current speed
+- `GET /reports` — returns saved reports (stored in `data/reports.json`)
+
+Design:
+- Clear separation: `camera`, `detector`, `gps`, `service`, `storage`, `api`
+- Pluggable implementations — replace mock detector/camera with real TFLite/OpenCV implementations
+- Reports are only saved when speed > 5 km/h
 # psv-crowd-counter
 
 ```markdown
@@ -36,7 +55,7 @@ A real-time edge AI system that counts passengers and detects driver drowsiness 
 
 ```bash
 # Clone repository
-git clone https://github.com/yourcompany/psv-crowd-counter
+git clone https://github.com/sathuku01/psv-crowd-counter
 cd psv-crowd-counter
 
 # Install Go dependencies

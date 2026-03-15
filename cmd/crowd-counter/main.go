@@ -21,7 +21,7 @@ func main() {
 	// Video path
 	videoPath := "/home/sathuku/psv-crowd-counter/internal/camera/mock/sample.mp4"
 	// YOLOv8 ONNX path
-	modelPath := "/home/sathuku/psv-crowd-counter/yolov8n.onnx"
+	modelPath := "/home/sathuku/psv-crowd-counter/internal/core/models/yolov8n.onnx"
 
 	// Open video file
 	video, err := gocv.VideoCaptureFile(videoPath)

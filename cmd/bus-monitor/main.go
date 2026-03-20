@@ -16,12 +16,28 @@ import (
 )
 
 const (
-	EARThreshold = 0.25 // Eye Aspect Ratio threshold for drowsiness
-	MaxFrames    = 20   // Number of consecutive frames with closed eyes to trigger alert
-	MediaPipeURL = "http://localhost:5000/detect"
+	EARThreshold    = 0.25 // Eye Aspect Ratio threshold for drowsiness
+	MARThreshold    = 0.45 // Mouth Aspect Ratio threshold for yawning
+	PitchThreshold  = 20.0 // Head pitch threshold (looking down = drowsiness)
+	YawThreshold    = 30.0 // Head yaw threshold (looking sideways)
+	RollThreshold   = 25.0 // Head roll threshold (tilting head)
+	MaxFrames       = 20   // Frames with closed eyes to trigger alert
+	MaxYawnFrames   = 15   // Frames with yawning to trigger alert
+	MaxPoseFrames   = 20   // Frames with abnormal pose to trigger alert
+	MediaPipeURL    = "http://localhost:5000/detect"
+	smoothingFactor = 0.3 // EMA smoothing factor
 )
 
-var closedFrames int
+var (
+	closedFrames  int
+	yawnFrames    int
+	poseFrames    int
+	smoothedEAR   float64 = 0.25
+	smoothedMAR   float64 = 0.25
+	smoothedPitch float64 = 0.0
+	smoothedYaw   float64 = 0.0
+	smoothedRoll  float64 = 0.0
+)
 
 // MediaPipeResponse represents the response from MediaPipe server
 type MediaPipeResponse struct {
@@ -29,6 +45,10 @@ type MediaPipeResponse struct {
 	EAR          float64 `json:"ear"`
 	LeftEAR      float64 `json:"left_ear"`
 	RightEAR     float64 `json:"right_ear"`
+	MAR          float64 `json:"mar"`
+	Pitch        float64 `json:"pitch"` // Head nod (positive = looking down)
+	Yaw          float64 `json:"yaw"`   // Head turn (positive = looking right)
+	Roll         float64 `json:"roll"`  // Head tilt (positive = tilting right)
 	FaceBox      []int   `json:"face_box"`
 	LeftEyeBox   []int   `json:"left_eye_box"`
 	RightEyeBox  []int   `json:"right_eye_box"`
@@ -212,20 +232,6 @@ func runWithMediaPipe() {
 				gocv.Rectangle(&frame, faceRect, color.RGBA{0, 255, 0, 0}, 2)
 			}
 
-			// Draw left eye rectangle (yellow)
-			leftEyeBox := result.LeftEyeBox
-			if len(leftEyeBox) == 4 {
-				leftEyeRect := image.Rect(leftEyeBox[0], leftEyeBox[1], leftEyeBox[2], leftEyeBox[3])
-				gocv.Rectangle(&frame, leftEyeRect, color.RGBA{255, 255, 0, 0}, 2)
-			}
-
-			// Draw right eye rectangle (yellow)
-			rightEyeBox := result.RightEyeBox
-			if len(rightEyeBox) == 4 {
-				rightEyeRect := image.Rect(rightEyeBox[0], rightEyeBox[1], rightEyeBox[2], rightEyeBox[3])
-				gocv.Rectangle(&frame, rightEyeRect, color.RGBA{255, 255, 0, 0}, 2)
-			}
-
 			// Draw mouth rectangle (red)
 			mouthBox := result.MouthBox
 			if len(mouthBox) == 4 {
@@ -241,10 +247,11 @@ func runWithMediaPipe() {
 				gocv.Circle(&frame, image.Point{X: p[0], Y: p[1]}, 2, color.RGBA{255, 255, 0, 0}, -1)
 			}
 
-			// Display EAR value
-			earText := fmt.Sprintf("EAR: %.2f", result.EAR)
+			// Display EAR, MAR and head pose values
+			earText := fmt.Sprintf("EAR: %.2f | MAR: %.2f | P: %.1f° Y: %.1f° R: %.1f°",
+				result.EAR, result.MAR, smoothedPitch, smoothedYaw, smoothedRoll)
 			gocv.PutText(&frame, earText, image.Pt(10, 30),
-				gocv.FontHersheySimplex, 0.7, color.RGBA{255, 255, 255, 0}, 1)
+				gocv.FontHersheySimplex, 0.5, color.RGBA{255, 255, 255, 0}, 1)
 
 			// Check for drowsiness
 			if result.EAR < EARThreshold {
@@ -261,6 +268,73 @@ func runWithMediaPipe() {
 				gocv.PutText(&frame, "DROWSINESS ALERT!", image.Pt(50, 50),
 					gocv.FontHersheySimplex, 1.2, color.RGBA{255, 0, 0, 0}, 3)
 			}
+
+			// Apply EMA smoothing for more stable detection
+			if result.EAR > 0 {
+				smoothedEAR = smoothedEAR*(1-smoothingFactor) + result.EAR*smoothingFactor
+			}
+			if result.MAR > 0 {
+				smoothedMAR = smoothedMAR*(1-smoothingFactor) + result.MAR*smoothingFactor
+			}
+
+			// Check for yawning using smoothed MAR
+			if smoothedMAR > MARThreshold && result.MAR > MARThreshold*0.8 {
+				yawnFrames++
+			} else {
+				yawnFrames = 0
+			}
+
+			if yawnFrames > MaxYawnFrames {
+				fmt.Println("⚠️  ALERT: YAWING DETECTED! Driver may be fatigued!  ⚠️")
+				gocv.PutText(&frame, "YAWNING ALERT!", image.Pt(50, 90),
+					gocv.FontHersheySimplex, 1.0, color.RGBA{255, 165, 0, 0}, 3)
+			}
+
+			// Apply EMA smoothing to head pose
+			if result.Pitch != 0 {
+				smoothedPitch = smoothedPitch*(1-smoothingFactor) + result.Pitch*smoothingFactor
+			}
+			if result.Yaw != 0 {
+				smoothedYaw = smoothedYaw*(1-smoothingFactor) + result.Yaw*smoothingFactor
+			}
+			if result.Roll != 0 {
+				smoothedRoll = smoothedRoll*(1-smoothingFactor) + result.Roll*smoothingFactor
+			}
+
+			// Check for abnormal head pose (drowsiness indicator)
+			// Positive pitch = looking down (chin to chest) - main drowsiness indicator
+			// Large yaw = looking sideways
+			// Large roll = tilting head
+			isDrowsyPose := smoothedPitch > PitchThreshold ||
+				smoothedYaw > YawThreshold ||
+				smoothedYaw < -YawThreshold ||
+				smoothedRoll > RollThreshold ||
+				smoothedRoll < -RollThreshold
+
+			if isDrowsyPose {
+				poseFrames++
+			} else {
+				poseFrames = 0
+			}
+
+			if poseFrames > MaxPoseFrames {
+				// Determine which pose issue
+				if smoothedPitch > PitchThreshold {
+					fmt.Println("⚠️  ALERT: HEAD DOWN! Driver may be falling asleep!  ⚠️")
+					gocv.PutText(&frame, "HEAD DOWN ALERT!", image.Pt(50, 130),
+						gocv.FontHersheySimplex, 0.9, color.RGBA{0, 100, 255, 0}, 3)
+				}
+				if smoothedYaw > YawThreshold || smoothedYaw < -YawThreshold {
+					fmt.Println("⚠️  ALERT: HEAD TURN! Driver looking away!  ⚠️")
+					gocv.PutText(&frame, "HEAD TURN ALERT!", image.Pt(50, 130),
+						gocv.FontHersheySimplex, 0.9, color.RGBA{255, 0, 255, 0}, 3)
+				}
+				if smoothedRoll > RollThreshold || smoothedRoll < -RollThreshold {
+					fmt.Println("⚠️  ALERT: HEAD TILT! Driver may be drowsy!  ⚠️")
+					gocv.PutText(&frame, "HEAD TILT ALERT!", image.Pt(50, 130),
+						gocv.FontHersheySimplex, 0.9, color.RGBA{0, 255, 255, 0}, 3)
+				}
+			}
 		}
 
 		window.IMShow(frame)
@@ -271,6 +345,9 @@ func runWithMediaPipe() {
 }
 
 func detectWithMediaPipe(frame gocv.Mat, client *http.Client) *MediaPipeResponse {
+	// Debug: Print frame size
+	fmt.Printf("[DEBUG] Frame size: %dx%d, channels: %d\n", frame.Cols(), frame.Rows(), frame.Channels())
+
 	// Convert frame to JPEG
 	buf, err := gocv.IMEncode(".jpg", frame)
 	if err != nil {
@@ -281,6 +358,7 @@ func detectWithMediaPipe(frame gocv.Mat, client *http.Client) *MediaPipeResponse
 
 	// Encode to base64
 	imgBytes := buf.GetBytes()
+	fmt.Printf("[DEBUG] JPEG size: %d bytes\n", len(imgBytes))
 	b64Bytes := make([]byte, base64.StdEncoding.EncodedLen(len(imgBytes)))
 	base64.StdEncoding.Encode(b64Bytes, imgBytes)
 

@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/color"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"time"
@@ -16,16 +17,20 @@ import (
 )
 
 const (
-	EARThreshold    = 0.25 // Eye Aspect Ratio threshold for drowsiness
-	MARThreshold    = 0.45 // Mouth Aspect Ratio threshold for yawning
-	PitchThreshold  = 20.0 // Head pitch threshold (looking down = drowsiness)
-	YawThreshold    = 30.0 // Head yaw threshold (looking sideways)
-	RollThreshold   = 25.0 // Head roll threshold (tilting head)
-	MaxFrames       = 20   // Frames with closed eyes to trigger alert
-	MaxYawnFrames   = 15   // Frames with yawning to trigger alert
-	MaxPoseFrames   = 20   // Frames with abnormal pose to trigger alert
+	EARThreshold    = 0.30 // Eye Aspect Ratio threshold for drowsiness (higher = more sensitive)
+	MARThreshold    = 0.35 // Mouth Aspect Ratio threshold for yawning (lower = more sensitive)
+	PitchThreshold  = 12.0 // Head pitch threshold (looking down = drowsiness) - very low for more sensitivity
+	YawThreshold    = 20.0 // Head yaw threshold (looking sideways) - very low for more sensitivity
+	RollThreshold   = 15.0 // Head roll threshold (tilting head) - very low for more sensitivity
+	MaxFrames       = 8    // Frames with closed eyes to trigger alert (very few for fast detection)
+	MaxYawnFrames   = 6    // Frames with yawning to trigger alert (very few for fast detection)
+	MaxPoseFrames   = 8    // Frames with abnormal pose to trigger alert (very few for fast detection)
 	MediaPipeURL    = "http://localhost:5000/detect"
-	smoothingFactor = 0.3 // EMA smoothing factor
+	smoothingFactor = 0.5 // EMA smoothing factor (higher for faster response)
+
+	// Sliding window settings
+	WindowSize           = 30 // 1 second at 30 FPS (minimal for fast detection)
+	BlinkFramesThreshold = 5  // Frames to consider a "long" blink (very few for more sensitivity)
 )
 
 var (
@@ -37,7 +42,172 @@ var (
 	smoothedPitch float64 = 0.0
 	smoothedYaw   float64 = 0.0
 	smoothedRoll  float64 = 0.0
+
+	// Sliding window buffers for feature computation
+	earHistory   []float64
+	pitchHistory []float64
+	yawHistory   []float64
+	rollHistory  []float64
+	marHistory   []float64
+	blinkHistory []bool // true if eye was closed that frame
+
+	// Computed features
+	drowsinessScore    float64 = 0.0
+	blinkRate          float64 = 0.0
+	slowBlinkRatio     float64 = 0.0
+	eyeClosureDuration int     = 0
+	nodCount           int     = 0
+	yawnDuration       int     = 0
+
+	// State tracking
+	wasEyeClosed    bool = false
+	blinkStartFrame int  = 0
+	nodStartFrame   int  = 0
+	isNodding       bool = false
 )
+
+// Statistics helper functions
+func calculateMean(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	sum := 0.0
+	for _, v := range values {
+		sum += v
+	}
+	return sum / float64(len(values))
+}
+
+func calculateStdDev(values []float64) float64 {
+	if len(values) < 2 {
+		return 0
+	}
+	mean := calculateMean(values)
+	sumSq := 0.0
+	for _, v := range values {
+		diff := v - mean
+		sumSq += diff * diff
+	}
+	return math.Sqrt(sumSq / float64(len(values)-1))
+}
+
+func calculateMin(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	minVal := values[0]
+	for _, v := range values {
+		if v < minVal {
+			minVal = v
+		}
+	}
+	return minVal
+}
+
+func calculateMax(values []float64) float64 {
+	if len(values) == 0 {
+		return 0
+	}
+	maxVal := values[0]
+	for _, v := range values {
+		if v > maxVal {
+			maxVal = v
+		}
+	}
+	return maxVal
+}
+
+func countBlinks(blinkHistory []bool) (totalBlinks, slowBlinks int) {
+	if len(blinkHistory) < 2 {
+		return 0, 0
+	}
+	inBlink := false
+	for i, closed := range blinkHistory {
+		if closed && !inBlink {
+			// Blink started
+			inBlink = true
+			blinkStart := i
+			// Find blink end
+			for j := i + 1; j < len(blinkHistory); j++ {
+				if !blinkHistory[j] {
+					// Blink ended
+					blinkDuration := j - blinkStart
+					totalBlinks++
+					if blinkDuration >= BlinkFramesThreshold {
+						slowBlinks++
+					}
+					inBlink = false
+					break
+				}
+			}
+		}
+	}
+	return totalBlinks, slowBlinks
+}
+
+func countHeadNods(pitchHistory []float64, threshold float64) int {
+	if len(pitchHistory) < 10 {
+		return 0
+	}
+	nods := 0
+	inNod := false
+	for i, pitch := range pitchHistory {
+		if pitch > threshold && !inNod {
+			inNod = true
+			nodStart := i
+			// Find nod end (when pitch goes back below threshold)
+			for j := i + 1; j < len(pitchHistory); j++ {
+				if pitchHistory[j] <= threshold {
+					// Nod ended - count only if duration is reasonable (not just noise)
+					if j-nodStart >= 5 && j-nodStart <= 30 {
+						nods++
+					}
+					inNod = false
+					break
+				}
+			}
+		}
+	}
+	return nods
+}
+
+func calculateDrowsinessScore(
+	earMean, earMin float64,
+	blinkRate, slowBlinkRatio float64,
+	nodCount, yawnDuration, eyeClosureDuration int,
+	pitchMax, yawMax, rollMax float64,
+) float64 {
+	// Weighted drowsiness score
+	score := 0.0
+
+	// Eye closure contributes most (40%)
+	if earMean < EARThreshold {
+		score += 0.4 * (1.0 - earMean/EARThreshold)
+	}
+	if earMin < EARThreshold*0.5 {
+		score += 0.2
+	}
+
+	// Eye closure duration (20%)
+	if eyeClosureDuration > 15 {
+		score += 0.2 * math.Min(1.0, float64(eyeClosureDuration)/40.0)
+	}
+
+	// Slow blinks indicate drowsiness (15%)
+	score += 0.15 * slowBlinkRatio
+
+	// Head nodding is strong indicator (15%)
+	if nodCount >= 2 {
+		score += 0.15 * math.Min(1.0, float64(nodCount)/4.0)
+	}
+
+	// Yawning (10%)
+	if yawnDuration > 10 {
+		score += 0.1 * math.Min(1.0, float64(yawnDuration)/20.0)
+	}
+
+	return math.Min(1.0, score)
+}
 
 // MediaPipeResponse represents the response from MediaPipe server
 type MediaPipeResponse struct {
@@ -55,6 +225,7 @@ type MediaPipeResponse struct {
 	MouthBox     []int   `json:"mouth_box"`
 	LeftEye      [][]int `json:"left_eye"`
 	RightEye     [][]int `json:"right_eye"`
+	Nose         [][]int `json:"nose"`
 	Error        string  `json:"error,omitempty"`
 }
 
@@ -105,7 +276,7 @@ func runWithFaceDetection() {
 	}
 	defer faceNet.Close()
 
-	fmt.Println("Running with face detection only")
+	fmt.Println("Running with face detection only.\nPlease start mediapipe server")
 
 	for {
 		if ok := webcam.Read(&frame); !ok {
@@ -208,7 +379,9 @@ func runWithMediaPipe() {
 
 	for {
 		if ok := webcam.Read(&frame); !ok {
-			continue
+			// Video ended - close window and exit
+			fmt.Println("Video ended, closing window...")
+			break
 		}
 		if frame.Empty() {
 			continue
@@ -221,10 +394,98 @@ func runWithMediaPipe() {
 		if !result.FaceDetected {
 			fmt.Println("Face NOT detected in frame")
 		} else {
-			fmt.Printf("Face detected! EAR: %.2f, FaceBox: %v\n", result.EAR, result.FaceBox)
+			fmt.Printf("Face detected! EAR: %.2f, MAR: %.2f, Pitch: %.1f, Yaw: %.1f, Roll: %.1f, FaceBox: %v, Nose: %v\n",
+				result.EAR, result.MAR, result.Pitch, result.Yaw, result.Roll, result.FaceBox, result.Nose)
 		}
 
 		if result.FaceDetected {
+			// ===== SLIDING WINDOW FEATURE COMPUTATION =====
+			// Update sliding window buffers
+			earHistory = append(earHistory, result.EAR)
+			if len(earHistory) > WindowSize {
+				earHistory = earHistory[len(earHistory)-WindowSize:]
+			}
+
+			pitchHistory = append(pitchHistory, result.Pitch)
+			if len(pitchHistory) > WindowSize {
+				pitchHistory = pitchHistory[len(pitchHistory)-WindowSize:]
+			}
+
+			yawHistory = append(yawHistory, result.Yaw)
+			if len(yawHistory) > WindowSize {
+				yawHistory = yawHistory[len(yawHistory)-WindowSize:]
+			}
+
+			rollHistory = append(rollHistory, result.Roll)
+			if len(rollHistory) > WindowSize {
+				rollHistory = rollHistory[len(rollHistory)-WindowSize:]
+			}
+
+			marHistory = append(marHistory, result.MAR)
+			if len(marHistory) > WindowSize {
+				marHistory = marHistory[len(marHistory)-WindowSize:]
+			}
+
+			// Track eye state for blink detection
+			eyeClosedNow := result.EAR < EARThreshold
+			blinkHistory = append(blinkHistory, eyeClosedNow)
+			if len(blinkHistory) > WindowSize {
+				blinkHistory = blinkHistory[len(blinkHistory)-WindowSize:]
+			}
+
+			// Calculate features when we have enough data
+			if len(earHistory) >= 10 {
+				earMean := calculateMean(earHistory)
+				earMin := calculateMin(earHistory)
+
+				totalBlinks, slowBlinks := countBlinks(blinkHistory)
+				if len(blinkHistory) > 0 {
+					blinkRate = float64(totalBlinks) * 30.0 / float64(len(blinkHistory)) // blinks per minute
+				}
+				if totalBlinks > 0 {
+					slowBlinkRatio = float64(slowBlinks) / float64(totalBlinks)
+				}
+
+				nodCount = countHeadNods(pitchHistory, PitchThreshold)
+
+				// Calculate drowsiness score
+				drowsinessScore = calculateDrowsinessScore(
+					earMean, earMin,
+					blinkRate, slowBlinkRatio,
+					nodCount, yawnDuration, eyeClosureDuration,
+					calculateMax(pitchHistory), calculateMax(yawHistory), calculateMax(rollHistory),
+				)
+			}
+
+			// Track blink durations
+			if eyeClosedNow {
+				if !wasEyeClosed {
+					// Blink started
+					blinkStartFrame = len(earHistory)
+				}
+				eyeClosureDuration++
+			} else {
+				if wasEyeClosed {
+					// Blink ended
+					if eyeClosureDuration > BlinkFramesThreshold {
+						// This was a long blink
+					}
+				}
+				eyeClosureDuration = 0
+			}
+			wasEyeClosed = eyeClosedNow
+
+			// Track yawning duration
+			if result.MAR > MARThreshold {
+				yawnDuration++
+			} else {
+				if yawnDuration > 15 {
+					// Significant yawn detected
+				}
+				yawnDuration = 0
+			}
+
+			// ===== DRAWING =====
 			// Draw face rectangle (green)
 			faceBox := result.FaceBox
 			if len(faceBox) == 4 {
@@ -239,7 +500,7 @@ func runWithMediaPipe() {
 				gocv.Rectangle(&frame, mouthRect, color.RGBA{255, 0, 0, 0}, 2)
 			}
 
-			// Draw eye landmarks
+			// Draw eye landmarks only (no bounding boxes)
 			for _, p := range result.LeftEye {
 				gocv.Circle(&frame, image.Point{X: p[0], Y: p[1]}, 2, color.RGBA{255, 255, 0, 0}, -1)
 			}
@@ -247,11 +508,50 @@ func runWithMediaPipe() {
 				gocv.Circle(&frame, image.Point{X: p[0], Y: p[1]}, 2, color.RGBA{255, 255, 0, 0}, -1)
 			}
 
-			// Display EAR, MAR and head pose values
-			earText := fmt.Sprintf("EAR: %.2f | MAR: %.2f | P: %.1f° Y: %.1f° R: %.1f°",
-				result.EAR, result.MAR, smoothedPitch, smoothedYaw, smoothedRoll)
-			gocv.PutText(&frame, earText, image.Pt(10, 30),
+			// Draw only nose tip (first point, larger purple dot)
+			if len(result.Nose) > 0 {
+				gocv.Circle(&frame, image.Point{X: result.Nose[0][0], Y: result.Nose[0][1]}, 5, color.RGBA{255, 0, 255, 0}, -1)
+			}
+
+			// Display comprehensive features
+			var statusText string
+			var statusColor color.RGBA
+
+			if drowsinessScore > 0.7 {
+				statusText = "ALERT!"
+				statusColor = color.RGBA{255, 0, 0, 0}
+			} else if drowsinessScore > 0.4 {
+				statusText = "DROWSY"
+				statusColor = color.RGBA{255, 165, 0, 0}
+			} else {
+				statusText = "Normal"
+				statusColor = color.RGBA{0, 255, 0, 0}
+			}
+
+			// Main status line with score
+			mainText := fmt.Sprintf("Status: %s | Drowsiness: %.0f%%", statusText, drowsinessScore*100)
+			gocv.PutText(&frame, mainText, image.Pt(10, 30),
+				gocv.FontHersheySimplex, 0.6, statusColor, 2)
+
+			// EAR and MAR
+			earMarText := fmt.Sprintf("EAR: %.2f | MAR: %.2f", result.EAR, result.MAR)
+			gocv.PutText(&frame, earMarText, image.Pt(10, 60),
 				gocv.FontHersheySimplex, 0.5, color.RGBA{255, 255, 255, 0}, 1)
+
+			// Head pose
+			poseText := fmt.Sprintf("Pitch: %.1f° | Yaw: %.1f° | Roll: %.1f°", smoothedPitch, smoothedYaw, smoothedRoll)
+			gocv.PutText(&frame, poseText, image.Pt(10, 85),
+				gocv.FontHersheySimplex, 0.5, color.RGBA{200, 200, 200, 0}, 1)
+
+			// Blink and nod features
+			// Compute nod count for display if not computed yet
+			if nodCount == 0 && len(pitchHistory) >= 10 {
+				nodCount = countHeadNods(pitchHistory, PitchThreshold)
+			}
+			featureText := fmt.Sprintf("Blink Rate: %.1f/min | Slow Blink: %.0f%% | Nods: %d",
+				blinkRate, slowBlinkRatio*100, nodCount)
+			gocv.PutText(&frame, featureText, image.Pt(10, 110),
+				gocv.FontHersheySimplex, 0.4, color.RGBA{150, 150, 150, 0}, 1)
 
 			// Check for drowsiness
 			if result.EAR < EARThreshold {
@@ -265,7 +565,7 @@ func runWithMediaPipe() {
 				fmt.Println("⚠️  ALERT: DROWSINESS DETECTED! Driver may be falling asleep!  ⚠️")
 
 				// Display alert on screen
-				gocv.PutText(&frame, "DROWSINESS ALERT!", image.Pt(50, 50),
+				gocv.PutText(&frame, "DROWSINESS ALERT!", image.Pt(0, 250),
 					gocv.FontHersheySimplex, 1.2, color.RGBA{255, 0, 0, 0}, 3)
 			}
 
@@ -286,7 +586,7 @@ func runWithMediaPipe() {
 
 			if yawnFrames > MaxYawnFrames {
 				fmt.Println("⚠️  ALERT: YAWING DETECTED! Driver may be fatigued!  ⚠️")
-				gocv.PutText(&frame, "YAWNING ALERT!", image.Pt(50, 90),
+				gocv.PutText(&frame, "YAWNING ALERT!", image.Pt(0, 200),
 					gocv.FontHersheySimplex, 1.0, color.RGBA{255, 165, 0, 0}, 3)
 			}
 
@@ -318,27 +618,89 @@ func runWithMediaPipe() {
 			}
 
 			if poseFrames > MaxPoseFrames {
-				// Determine which pose issue
+				// Determine which pose issue and display single colored alert
+				var poseAlert string
+				var poseColor color.RGBA
+
 				if smoothedPitch > PitchThreshold {
-					fmt.Println("⚠️  ALERT: HEAD DOWN! Driver may be falling asleep!  ⚠️")
-					gocv.PutText(&frame, "HEAD DOWN ALERT!", image.Pt(50, 130),
-						gocv.FontHersheySimplex, 0.9, color.RGBA{0, 100, 255, 0}, 3)
+					poseAlert = "HEAD DOWN"
+					poseColor = color.RGBA{0, 100, 255, 0} // Blue
+				} else if smoothedYaw > YawThreshold || smoothedYaw < -YawThreshold {
+					poseAlert = "HEAD TURN"
+					poseColor = color.RGBA{255, 0, 255, 0} // Magenta
+				} else if smoothedRoll > RollThreshold || smoothedRoll < -RollThreshold {
+					poseAlert = "HEAD TILT"
+					poseColor = color.RGBA{0, 255, 255, 0} // Cyan
 				}
-				if smoothedYaw > YawThreshold || smoothedYaw < -YawThreshold {
-					fmt.Println("⚠️  ALERT: HEAD TURN! Driver looking away!  ⚠️")
-					gocv.PutText(&frame, "HEAD TURN ALERT!", image.Pt(50, 130),
-						gocv.FontHersheySimplex, 0.9, color.RGBA{255, 0, 255, 0}, 3)
+
+				if poseAlert != "" {
+					fmt.Println("⚠️  ALERT: " + poseAlert + "! Driver may be drowsy!  ⚠️")
+					gocv.PutText(&frame, poseAlert+" ALERT!", image.Pt(0, 150),
+						gocv.FontHersheySimplex, 0.9, poseColor, 3)
 				}
-				if smoothedRoll > RollThreshold || smoothedRoll < -RollThreshold {
-					fmt.Println("⚠️  ALERT: HEAD TILT! Driver may be drowsy!  ⚠️")
-					gocv.PutText(&frame, "HEAD TILT ALERT!", image.Pt(50, 130),
-						gocv.FontHersheySimplex, 0.9, color.RGBA{0, 255, 255, 0}, 3)
+
+				// ===== COMBINED DROWSINESS ALERT =====
+				// Show combined alert if any drowsiness indicator is triggered
+				if closedFrames > MaxFrames || yawnFrames > MaxYawnFrames || poseFrames > MaxPoseFrames {
+					var alertMsg string
+					alertMsg = "DROWSINESS: "
+					hasMultiple := false
+
+					if closedFrames > MaxFrames {
+						alertMsg += "EyesClosed"
+						hasMultiple = true
+					}
+					if yawnFrames > MaxYawnFrames {
+						if hasMultiple {
+							alertMsg += "+"
+						}
+						alertMsg += "Yawning"
+						hasMultiple = true
+					}
+					if poseFrames > MaxPoseFrames {
+						if hasMultiple {
+							alertMsg += "+"
+						}
+						if smoothedPitch > PitchThreshold {
+							alertMsg += "HeadDown"
+						}
+						if smoothedYaw > YawThreshold || smoothedYaw < -YawThreshold {
+							if smoothedPitch > PitchThreshold {
+								alertMsg += "+"
+							}
+							alertMsg += "HeadTurn"
+						}
+						if smoothedRoll > RollThreshold || smoothedRoll < -RollThreshold {
+							alertMsg += "+HeadTilt"
+						}
+					}
+
+					// Terminal alert
+					fmt.Println(">>> ALERT: " + alertMsg + " <<<")
+
+					// // Show what triggered
+					yy := 90
+					if closedFrames > MaxFrames {
+						gocv.PutText(&frame, "- Eyes closed", image.Pt(450, 60), gocv.FontHersheySimplex, 0.7, color.RGBA{255, 255, 0, 0}, 2)
+						yy += 30
+					}
+					if yawnFrames > MaxYawnFrames {
+						gocv.PutText(&frame, "- Yawning", image.Pt(450, 80), gocv.FontHersheySimplex, 0.7, color.RGBA{255, 165, 0, 0}, 2)
+						yy += 30
+					}
+					if poseFrames > MaxPoseFrames {
+						gocv.PutText(&frame, "- Head pose alert", image.Pt(450, yy), gocv.FontHersheySimplex, 0.7, color.RGBA{0, 100, 255, 0}, 2)
+					}
 				}
+
 			}
 		}
 
 		window.IMShow(frame)
-		if window.WaitKey(1) == 27 {
+		key := window.WaitKey(1)
+		// ESC key to exit
+		if key == 27 {
+			fmt.Println("ESC pressed, exiting...")
 			break
 		}
 	}

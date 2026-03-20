@@ -1,0 +1,25 @@
+.PHONY: run kill restart
+
+# Kill any running server.py process
+kill:
+	@echo "Killing server.py if running..."
+	@pkill -f cmd/bus-monitor/mediapipe_server.py || true
+
+# Start the Python server
+server:
+	@echo "Starting server.py..."
+	@python3 cmd/bus-monitor/mediapipe_server.py &
+
+# Run Go program
+go:
+	@echo "Running help.go..."
+	@go run cmd/bus-monitor/main.go
+
+# Full workflow: kill -> start server -> run go program
+run: kill server
+	@echo "Waiting for server to start..."
+	@sleep 2
+	@$(MAKE) go
+
+# Optional restart shortcut
+<!-- restart: run -->

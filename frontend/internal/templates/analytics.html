@@ -1,0 +1,151 @@
+{{define "content"}}
+<div class="analytics-page">
+    <div class="page-header">
+        <h2>Analytics & Insights</h2>
+        <div class="header-actions">
+            <form id="filter-form" class="filter-form">
+                <input type="text" name="vehicle_id" placeholder="Vehicle ID" class="filter-input">
+                <input type="datetime-local" name="start_time" class="filter-input">
+                <input type="datetime-local" name="end_time" class="filter-input">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <button type="button" id="clear-filters" class="btn btn-secondary">Clear</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Peak Hours Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Peak Usage Hours</h3>
+        </div>
+        <div class="peak-hours-grid">
+            {{range .PeakHours}}
+            <div class="peak-hour-card">
+                <div class="peak-hour-time">{{printf "%02d:00" .Hour}}</div>
+                <div class="peak-hour-count">{{printf "%.1f" .AverageCount}}</div>
+                <div class="peak-hour-label">avg passengers</div>
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <p>No peak hour data available</p>
+            </div>
+            {{end}}
+        </div>
+    </div>
+
+    <!-- Hourly Statistics Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Hourly Statistics</h3>
+        </div>
+        <div class="chart-container">
+            <div class="hourly-chart">
+                {{range .HourlyData}}
+                <div class="hour-bar" title="{{printf "%02d:00" .Hour}}: {{printf "%.1f" .AverageCount}} avg passengers">
+                    <div class="bar-fill" style="height: {{if gt .AverageCount 0.0}}{{mul .AverageCount 2.0}}{{else}}5{{end}}px;"></div>
+                    <div class="bar-label">{{printf "%02d" .Hour}}</div>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        <div class="chart-legend">
+            <span class="legend-item">
+                <span class="legend-color"></span>
+                Average Passenger Count
+            </span>
+        </div>
+    </div>
+
+    <!-- Daily Statistics Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Daily Statistics</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Average Count</th>
+                        <th>Max Count</th>
+                        <th>Total Reports</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .DailyData}}
+                    <tr>
+                        <td>{{.Date}}</td>
+                        <td>{{printf "%.1f" .AverageCount}}</td>
+                        <td>{{.MaxCount}}</td>
+                        <td>{{.TotalReports}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="4" class="empty-table">No daily data available</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Insights Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Insights</h3>
+        </div>
+        <div class="insights-grid">
+            <div class="insight-card">
+                <div class="insight-icon">📊</div>
+                <div class="insight-content">
+                    <h4>Data Summary</h4>
+                    <p>Analysis based on {{len .DailyData}} day(s) of data</p>
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon">⏰</div>
+                <div class="insight-content">
+                    <h4>Peak Hours</h4>
+                    {{if .PeakHours}}
+                    <p>Highest traffic at {{(index .PeakHours 0).Hour}}:00</p>
+                    {{else}}
+                    <p>No peak data available</p>
+                    {{end}}
+                </div>
+            </div>
+            <div class="insight-card">
+                <div class="insight-icon">📈</div>
+                <div class="insight-content">
+                    <h4>Trends</h4>
+                    <p>Monitor patterns for optimization</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filter form submission
+document.getElementById('filter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const params = new URLSearchParams(formData);
+    window.location.href = '/analytics?' + params.toString();
+});
+
+// Clear filters
+document.getElementById('clear-filters').addEventListener('click', function() {
+    window.location.href = '/analytics';
+});
+
+// Add hover effects to hour bars
+document.querySelectorAll('.hour-bar').forEach(function(bar) {
+    bar.addEventListener('mouseenter', function() {
+        this.querySelector('.bar-fill').style.opacity = '0.8';
+    });
+    bar.addEventListener('mouseleave', function() {
+        this.querySelector('.bar-fill').style.opacity = '1';
+    });
+});
+</script>
+{{end}}

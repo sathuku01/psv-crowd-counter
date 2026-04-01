@@ -1,0 +1,37 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSV Crowd Counter</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1>🚌 PSV Crowd Counter</h1>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+            <a href="/vehicles" class="nav-link">Vehicles</a>
+            <a href="/analytics" class="nav-link">Analytics</a>
+        </div>
+        <div class="nav-status">
+            <span id="status-indicator" class="status-dot"></span>
+            <span id="status-text">Checking...</span>
+        </div>
+    </nav>
+
+    <main class="container">
+        {{template "content" .}}
+    </main>
+
+    <footer class="footer">
+        <p>PSV Crowd Counter &copy; 2024 | Real-time Passenger Monitoring System</p>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,130 @@
+{{define "content"}}
+<div class="dashboard">
+    <div class="page-header">
+        <h2>Dashboard</h2>
+        <div class="last-updated">
+            Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
+            <button id="refresh-btn" class="btn btn-small">Refresh</button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <h3>Total Passengers</h3>
+                <p class="stat-value" id="total-passengers">{{.TotalPassengers}}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🚌</div>
+            <div class="stat-content">
+                <h3>Active Vehicles</h3>
+                <p class="stat-value" id="active-vehicles">{{.ActiveVehicles}}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>Total Vehicles</h3>
+                <p class="stat-value" id="total-vehicles">{{.TotalVehicles}}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <h3>Avg. Density</h3>
+                <p class="stat-value" id="avg-density">{{printf "%.1f" .AverageDensity}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Status Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Vehicle Status</h3>
+            <a href="/vehicles" class="btn btn-link">View All →</a>
+        </div>
+        <div class="vehicle-grid">
+            {{range .Vehicles}}
+            <div class="vehicle-card status-{{.Status}}">
+                <div class="vehicle-header">
+                    <h4>{{.BusID}}</h4>
+                    <span class="status-badge {{.Status}}">{{.Status}}</span>
+                </div>
+                <div class="vehicle-stats">
+                    <div class="vehicle-stat">
+                        <span class="label">Passengers</span>
+                        <span class="value">{{.PassengerCount}}</span>
+                    </div>
+                    <div class="vehicle-stat">
+                        <span class="label">Speed</span>
+                        <span class="value">{{printf "%.1f" .SpeedKPH}} km/h</span>
+                    </div>
+                </div>
+                <div class="vehicle-footer">
+                    <span class="last-seen">Last seen: {{.LastUpdated.Format "15:04:05"}}</span>
+                </div>
+            </div>
+            {{else}}
+            <div class="empty-state">
+                <p>No vehicles currently reporting</p>
+            </div>
+            {{end}}
+        </div>
+    </div>
+
+    <!-- Recent Reports Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Recent Reports</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Front</th>
+                        <th>Rear</th>
+                        <th>Total</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .RecentReports}}
+                    <tr>
+                        <td>{{.Timestamp.Format "15:04:05"}}</td>
+                        <td>{{.BusID}}</td>
+                        <td>{{.Front}}</td>
+                        <td>{{.Rear}}</td>
+                        <td>{{add .Front .Rear}}</td>
+                        <td>{{printf "%.1f" .SpeedKPH}} km/h</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="6" class="empty-table">No recent reports</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+
+// Manual refresh button
+document.getElementById('refresh-btn').addEventListener('click', function() {
+    location.reload();
+});
+</script>
+{{end}}

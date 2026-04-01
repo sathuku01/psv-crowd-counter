@@ -1,0 +1,111 @@
+{{define "content"}}
+<div class="vehicles-page">
+    <div class="page-header">
+        <h2>Vehicle Management</h2>
+        <div class="header-actions">
+            <input type="text" id="vehicle-search" placeholder="Search vehicles..." class="search-input">
+            <select id="status-filter" class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="idle">Idle</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Vehicle Stats Summary -->
+    <div class="stats-summary">
+        <div class="summary-item">
+            <span class="summary-label">Total Vehicles:</span>
+            <span class="summary-value">{{.TotalVehicles}}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Active:</span>
+            <span class="summary-value active">{{.ActiveVehicles}}</span>
+        </div>
+        <div class="summary-item">
+            <span class="summary-label">Idle:</span>
+            <span class="summary-value idle">{{sub .TotalVehicles .ActiveVehicles}}</span>
+        </div>
+    </div>
+
+    <!-- Vehicle List -->
+    <div class="vehicle-list">
+        {{range .Vehicles}}
+        <div class="vehicle-list-item status-{{.Status}}" data-bus-id="{{.BusID}}" data-status="{{.Status}}">
+            <div class="vehicle-main">
+                <div class="vehicle-id">
+                    <h3>{{.BusID}}</h3>
+                    <span class="status-badge {{.Status}}">{{.Status}}</span>
+                </div>
+                <div class="vehicle-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Passengers</span>
+                        <span class="metric-value">{{.PassengerCount}}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Speed</span>
+                        <span class="metric-value">{{printf "%.1f" .SpeedKPH}} km/h</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Last Updated</span>
+                        <span class="metric-value">{{.LastUpdated.Format "15:04:05"}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="vehicle-actions">
+                <button class="btn btn-small btn-primary" onclick="viewDetails('{{.BusID}}')">View Details</button>
+            </div>
+        </div>
+        {{else}}
+        <div class="empty-state">
+            <div class="empty-icon">🚌</div>
+            <h3>No Vehicles Found</h3>
+            <p>No vehicles are currently reporting data</p>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<script>
+// Search functionality
+document.getElementById('vehicle-search').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const vehicles = document.querySelectorAll('.vehicle-list-item');
+    
+    vehicles.forEach(function(vehicle) {
+        const busId = vehicle.getAttribute('data-bus-id').toLowerCase();
+        if (busId.includes(searchTerm)) {
+            vehicle.style.display = 'flex';
+        } else {
+            vehicle.style.display = 'none';
+        }
+    });
+});
+
+// Status filter functionality
+document.getElementById('status-filter').addEventListener('change', function(e) {
+    const status = e.target.value;
+    const vehicles = document.querySelectorAll('.vehicle-list-item');
+    
+    vehicles.forEach(function(vehicle) {
+        const vehicleStatus = vehicle.getAttribute('data-status');
+        if (status === '' || vehicleStatus === status) {
+            vehicle.style.display = 'flex';
+        } else {
+            vehicle.style.display = 'none';
+        }
+    });
+});
+
+// View details function
+function viewDetails(busId) {
+    alert('Viewing details for: ' + busId + '\n\nThis feature can be expanded to show detailed vehicle analytics.');
+}
+
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+</script>
+{{end}}

@@ -1,0 +1,13 @@
+{{define "content"}}
+<div class="error-page">
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h2>{{.Title}}</h2>
+        <p class="error-message">{{.Message}}</p>
+        <div class="error-actions">
+            <a href="/" class="btn btn-primary">Go to Dashboard</a>
+            <button onclick="location.reload()" class="btn btn-secondary">Try Again</button>
+        </div>
+    </div>
+</div>
+{{end}}

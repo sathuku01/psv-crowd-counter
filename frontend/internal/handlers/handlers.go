@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
+	"runtime"
 
-	"psv-crowd-counter/frontend/internal/models"
 	"psv-crowd-counter/frontend/internal/services"
 )
 
@@ -20,6 +21,15 @@ var templateFuncs = template.FuncMap{
 	},
 	"mul": func(a, b float64) float64 {
 		return a * b
+	},
+	"div": func(a, b float64) float64 {
+		if b == 0 {
+			return 0
+		}
+		return a / b
+	},
+	"float64": func(i int) float64 {
+		return float64(i)
 	},
 }
 
@@ -41,12 +51,22 @@ func NewHandler(apiService *services.APIService) *Handler {
 
 // loadTemplates loads all HTML templates
 func (h *Handler) loadTemplates() {
-	templateDir := "frontend/internal/templates"
+	// Get the directory of the current source file
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Printf("Warning: Could not get source file path")
+		return
+	}
+
+	// Get the directory containing this file
+	currentDir := filepath.Dir(filename)
+
+	// Navigate to the templates directory (go up one level to internal, then to templates)
+	templateDir := filepath.Join(currentDir, "..", "templates")
 
 	// Define template files
 	templateFiles := map[string]string{
 		"dashboard": filepath.Join(templateDir, "dashboard.html"),
-		"vehicles":  filepath.Join(templateDir, "vehicles.html"),
 		"analytics": filepath.Join(templateDir, "analytics.html"),
 		"error":     filepath.Join(templateDir, "error.html"),
 	}
@@ -74,28 +94,9 @@ func (h *Handler) DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	h.renderTemplate(w, "dashboard", data)
 }
 
-// VehiclesHandler handles the vehicles page
-func (h *Handler) VehiclesHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := h.apiService.GetDashboardData()
-	if err != nil {
-		log.Printf("Error fetching vehicles data: %v", err)
-		h.renderError(w, "Failed to load vehicles data", err.Error())
-		return
-	}
-
-	h.renderTemplate(w, "vehicles", data)
-}
-
 // AnalyticsHandler handles the analytics page
 func (h *Handler) AnalyticsHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse filter parameters from query string
-	filter := &models.FilterParams{
-		VehicleID: r.URL.Query().Get("vehicle_id"),
-		StartTime: r.URL.Query().Get("start_time"),
-		EndTime:   r.URL.Query().Get("end_time"),
-	}
-
-	data, err := h.apiService.GetAnalyticsData(filter)
+	data, err := h.apiService.GetAnalyticsData()
 	if err != nil {
 		log.Printf("Error fetching analytics data: %v", err)
 		h.renderError(w, "Failed to load analytics data", err.Error())
@@ -120,7 +121,7 @@ func (h *Handler) APIReportsHandler(w http.ResponseWriter, r *http.Request) {
 		if i > 0 {
 			w.Write([]byte(","))
 		}
-		w.Write([]byte(`{"bus_id":"` + report.BusID + `","front":` + string(rune(report.Front+'0')) + `,"rear":` + string(rune(report.Rear+'0')) + `,"speed_kph":` + string(rune(int(report.SpeedKPH)+'0')) + `}`))
+		w.Write([]byte(fmt.Sprintf(`{"bus_id":"%s","front":%d,"rear":%d}`, report.BusID, report.Front, report.Rear)))
 	}
 	w.Write([]byte("]"))
 }

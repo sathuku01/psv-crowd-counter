@@ -16,7 +16,7 @@ import sys
 import logging
 import io
 import base64
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from PIL import Image as PILImage
 
 # MediaPipe imports
@@ -286,6 +286,23 @@ def get_nose_coordinates(landmarks, image_width, image_height):
 # FLASK ROUTES
 # =============================================================================
 
+@app.after_request
+def add_cors_headers(response):
+    """Add CORS headers to all responses"""
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
+    return response
+
+@app.route('/health', methods=['GET'])
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'service': 'mediapipe-face-landmarker',
+        'model_loaded': detector is not None
+    })
+
 @app.route('/detect', methods=['POST'])
 def detect():
     """Main detection endpoint - returns landmarks and metrics for GoCV"""
@@ -330,6 +347,7 @@ def detect():
         except Exception as e:
             print(f"[ERROR] Color conversion failed: {e}")
             img_rgb = img_array
+            return jsonify({'error': f'Color conversion failed: {str(e)}'}), 400
         
         h, w = img_rgb.shape[:2]
         
@@ -402,18 +420,21 @@ def detect():
         except Exception as e:
             print(f"[ERROR] EAR calculation error: {e}")
             left_ear = right_ear = avg_ear = 0
+            return jsonify({'error': f'EAR calculation error: {str(e)}'}), 500
         
         try:
             mar = calculate_mar(landmarks, w, h)
         except Exception as e:
             print(f"[ERROR] MAR calculation error: {e}")
             mar = 0
+            return jsonify({'error': f'MAR calculation error: {str(e)}'}), 500
         
         try:
             pitch, yaw, roll = calculate_head_pose(landmarks, w, h)
         except Exception as e:
             print(f"[ERROR] Head pose error: {e}")
             pitch = yaw = roll = 0
+            return jsonify({'error': f'Head pose error: {str(e)}'}), 500
         
         # Get bounding boxes
         try:
@@ -424,6 +445,7 @@ def detect():
         except Exception as e:
             print(f"[ERROR] Bounding box error: {e}")
             face_box = left_eye_box = right_eye_box = mouth_box = [0, 0, 0, 0]
+            return jsonify({'error': f'Bounding box error: {str(e)}'}), 500
         
         # Get eye landmark coordinates
         try:
@@ -432,6 +454,7 @@ def detect():
         except Exception as e:
             print(f"[ERROR] Eye coords error: {e}")
             left_eye_coords = right_eye_coords = []
+            return jsonify({'error': f'Eye coords error: {str(e)}'}), 500
         
         # Get nose coordinates
         try:
@@ -439,6 +462,7 @@ def detect():
         except Exception as e:
             print(f"[ERROR] Nose coords error: {e}")
             nose_coords = []
+            return jsonify({'error': f'Nose coords error: {str(e)}'}), 500
         
         # Print debug info to terminal
         print(f"[INFO] Face detected! EAR: {avg_ear:.3f}, MAR: {mar:.3f}, Pitch: {pitch:.1f}°, Yaw: {yaw:.1f}°, Roll: {roll:.1f}°")
@@ -485,65 +509,6 @@ def detect():
         return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 
-@app.route('/health', methods=['GET'])
-def health():
-    """Health check endpoint"""
-    return jsonify({
-        'status': 'ok',
-        'model_loaded': detector is not None
-    })
-
-
-# =============================================================================
-# MAIN ENTRY POINT
-# =============================================================================
-
 if __name__ == '__main__':
-    print("Starting MediaPipe face landmark server on port 5000...")
-    print("Ready to receive frames from GoCV client")
-    app.run(host='0.0.0.0', port=5000, threaded=True)
-
-
-# =============================================================================
-# DOCUMENTATION
-# =============================================================================
-"""
-HOW EAR IS COMPUTED:
-====================
-Eye Aspect Ratio (EAR) measures how open the eye is using 6 landmarks.
-
-Formula: EAR = (A + B) / (2 * C)
-
-Where:
-- A = distance from top-left eyelid to bottom-left eyelid (vertical)
-- B = distance from top-right eyelid to bottom-right eyelid (vertical)  
-- C = distance from left corner to right corner (horizontal)
-
-Normal EAR ≈ 0.3-0.4 (eye open)
-Closed eye EAR < 0.2 (typically 0.1-0.15)
-
-
-HOW HEAD POSE IS COMPUTED:
-==========================
-Head pose is estimated using the geometric relationships between facial landmarks:
-
-- Pitch: Head nod (positive = looking down, negative = looking up)
-- Yaw: Head turn (positive = looking right, negative = looking left)
-- Roll: Head tilt (positive = tilting right, negative = tilting left)
-
-Calculated using nose tip position relative to eye midpoint.
-
-
-INSTALLATION:
-============
-pip install opencv-python mediapipe numpy flask pillow
-
-
-USAGE:
-======
-# Start Flask API server (for GoCV)
-python cmd/bus-monitor/mediapipe_server.py
-
-Then run GoCV client:
-cd cmd/bus-monitor && go run main.go
-"""
+    logger.info("Starting MediaPipe Face Landmark Detection Server on port 5000")
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)

@@ -1,87 +1,198 @@
 {{define "content"}}
-<div class="analytics-page">
+<div class="analytics">
     <div class="page-header">
-        <h2>Analytics & Insights</h2>
-        <div class="header-actions">
-            <form id="filter-form" class="filter-form">
-                <input type="text" name="vehicle_id" placeholder="Vehicle ID" class="filter-input">
-                <input type="datetime-local" name="start_time" class="filter-input">
-                <input type="datetime-local" name="end_time" class="filter-input">
-                <button type="submit" class="btn btn-primary">Apply Filters</button>
-                <button type="button" id="clear-filters" class="btn btn-secondary">Clear</button>
-            </form>
+        <h2>📊 Analytics Dashboard</h2>
+        <div class="last-updated">
+            Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
+            <button id="refresh-btn" class="btn btn-small">Refresh</button>
         </div>
     </div>
 
-    <!-- Peak Hours Section -->
-    <div class="section">
-        <div class="section-header">
-            <h3>Peak Usage Hours</h3>
+    <!-- Overview Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+                <h3>Total Passengers</h3>
+                <p class="stat-value" id="total-passengers">{{.TotalPassengers}}</p>
+            </div>
         </div>
-        <div class="peak-hours-grid">
-            {{range .PeakHours}}
-            <div class="peak-hour-card">
-                <div class="peak-hour-time">{{printf "%02d:00" .Hour}}</div>
-                <div class="peak-hour-count">{{printf "%.1f" .AverageCount}}</div>
-                <div class="peak-hour-label">avg passengers</div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🚌</div>
+            <div class="stat-content">
+                <h3>Active Vehicles</h3>
+                <p class="stat-value" id="active-vehicles">{{.ActiveVehicles}}</p>
             </div>
-            {{else}}
-            <div class="empty-state">
-                <p>No peak hour data available</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>Total Vehicles</h3>
+                <p class="stat-value" id="total-vehicles">{{.TotalVehicles}}</p>
             </div>
-            {{end}}
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+                <h3>Total Reports</h3>
+                <p class="stat-value" id="total-reports">{{.TotalReports}}</p>
+            </div>
         </div>
     </div>
 
-    <!-- Hourly Statistics Section -->
+    <!-- Driver Drowsiness Section -->
     <div class="section">
         <div class="section-header">
-            <h3>Hourly Statistics</h3>
+            <h3>😴 Driver Drowsiness Detection</h3>
         </div>
-        <div class="chart-container">
-            <div class="hourly-chart">
-                {{range .HourlyData}}
-                <div class="hour-bar" title="{{printf "%02d:00" .Hour}}: {{printf "%.1f" .AverageCount}} avg passengers">
-                    <div class="bar-fill" style="height: {{if gt .AverageCount 0.0}}{{mul .AverageCount 2.0}}{{else}}5{{end}}px;"></div>
-                    <div class="bar-label">{{printf "%02d" .Hour}}</div>
+        <div class="drowsiness-stats">
+            <div class="drowsiness-card">
+                <div class="drowsiness-icon">👁️</div>
+                <div class="drowsiness-content">
+                    <h4>Eye Closure Alerts</h4>
+                    <p class="drowsiness-value" id="eye-closure-alerts">{{.EyeClosureAlerts}}</p>
+                    <span class="drowsiness-label">Total alerts detected</span>
                 </div>
-                {{end}}
+            </div>
+
+            <div class="drowsiness-card">
+                <div class="drowsiness-icon">😮</div>
+                <div class="drowsiness-content">
+                    <h4>Yawning Alerts</h4>
+                    <p class="drowsiness-value" id="yawning-alerts">{{.YawningAlerts}}</p>
+                    <span class="drowsiness-label">Total alerts detected</span>
+                </div>
+            </div>
+
+            <div class="drowsiness-card">
+                <div class="drowsiness-icon">🔄</div>
+                <div class="drowsiness-content">
+                    <h4>Head Pose Alerts</h4>
+                    <p class="drowsiness-value" id="head-pose-alerts">{{.HeadPoseAlerts}}</p>
+                    <span class="drowsiness-label">Total alerts detected</span>
+                </div>
+            </div>
+
+            <div class="drowsiness-card">
+                <div class="drowsiness-icon">⚠️</div>
+                <div class="drowsiness-content">
+                    <h4>Critical Alerts</h4>
+                    <p class="drowsiness-value critical" id="critical-alerts">{{.CriticalAlerts}}</p>
+                    <span class="drowsiness-label">Requires immediate attention</span>
+                </div>
             </div>
         </div>
-        <div class="chart-legend">
-            <span class="legend-item">
-                <span class="legend-color"></span>
-                Average Passenger Count
-            </span>
+
+        <div class="drowsiness-summary">
+            <h4>Drowsiness Detection Summary</h4>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span class="summary-label">Average Eye Aspect Ratio (EAR):</span>
+                    <span class="summary-value" id="avg-ear">{{printf "%.2f" .AverageEAR}}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Average Mouth Aspect Ratio (MAR):</span>
+                    <span class="summary-value" id="avg-mar">{{printf "%.2f" .AverageMAR}}</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Detection Accuracy:</span>
+                    <span class="summary-value" id="detection-accuracy">{{printf "%.1f" .DetectionAccuracy}}%</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Active Monitoring Sessions:</span>
+                    <span class="summary-value" id="active-sessions">{{.ActiveSessions}}</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Daily Statistics Section -->
+    <!-- Passenger Head Count Section -->
     <div class="section">
         <div class="section-header">
-            <h3>Daily Statistics</h3>
+            <h3>👥 Passenger Head Count</h3>
+        </div>
+        <div class="passenger-stats">
+            <div class="passenger-card">
+                <div class="passenger-icon">🚪</div>
+                <div class="passenger-content">
+                    <h4>Front Door Count</h4>
+                    <p class="passenger-value" id="front-door-count">{{.FrontDoorCount}}</p>
+                    <span class="passenger-label">Total passengers entered</span>
+                </div>
+            </div>
+
+            <div class="passenger-card">
+                <div class="passenger-icon">🚪</div>
+                <div class="passenger-content">
+                    <h4>Rear Door Count</h4>
+                    <p class="passenger-value" id="rear-door-count">{{.RearDoorCount}}</p>
+                    <span class="passenger-label">Total passengers entered</span>
+                </div>
+            </div>
+
+            <div class="passenger-card">
+                <div class="passenger-icon">📊</div>
+                <div class="passenger-content">
+                    <h4>Average Passengers</h4>
+                    <p class="passenger-value" id="avg-passengers">{{printf "%.1f" .AveragePassengers}}</p>
+                    <span class="passenger-label">Per report</span>
+                </div>
+            </div>
+
+            <div class="passenger-card">
+                <div class="passenger-icon">🔝</div>
+                <div class="passenger-content">
+                    <h4>Peak Hour</h4>
+                    <p class="passenger-value" id="peak-hour">{{.PeakHour}}:00</p>
+                    <span class="passenger-label">Highest activity</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hourly-distribution">
+            <h4>Hourly Distribution</h4>
+            <div class="chart-container">
+                <div class="hourly-chart" id="hourly-chart">
+                    {{range $hour, $count := .HourlyDistribution}}
+                    <div class="hour-bar" data-hour="{{$hour}}" data-count="{{$count}}">
+                        <div class="bar-fill" style="height: {{mul (div (float64 $count) (float64 $.MaxHourlyCount)) 100}}%"></div>
+                        <span class="hour-label">{{$hour}}</span>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bus Statistics Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>🚌 Bus Statistics</h3>
         </div>
         <div class="table-container">
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Average Count</th>
-                        <th>Max Count</th>
+                        <th>Bus ID</th>
                         <th>Total Reports</th>
+                        <th>Average Passengers</th>
+                        <th>Max Passengers</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{range .DailyData}}
+                    {{range .BusStats}}
                     <tr>
-                        <td>{{.Date}}</td>
-                        <td>{{printf "%.1f" .AverageCount}}</td>
-                        <td>{{.MaxCount}}</td>
+                        <td>{{.BusID}}</td>
                         <td>{{.TotalReports}}</td>
+                        <td>{{printf "%.1f" .AveragePassengers}}</td>
+                        <td>{{.MaxPassengers}}</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="4" class="empty-table">No daily data available</td>
+                        <td colspan="4" class="empty-table">No bus statistics available</td>
                     </tr>
                     {{end}}
                 </tbody>
@@ -89,62 +200,218 @@
         </div>
     </div>
 
-    <!-- Insights Section -->
+    <!-- Recent Reports Section -->
     <div class="section">
         <div class="section-header">
-            <h3>Insights</h3>
+            <h3>📋 Recent Reports</h3>
         </div>
-        <div class="insights-grid">
-            <div class="insight-card">
-                <div class="insight-icon">📊</div>
-                <div class="insight-content">
-                    <h4>Data Summary</h4>
-                    <p>Analysis based on {{len .DailyData}} day(s) of data</p>
-                </div>
-            </div>
-            <div class="insight-card">
-                <div class="insight-icon">⏰</div>
-                <div class="insight-content">
-                    <h4>Peak Hours</h4>
-                    {{if .PeakHours}}
-                    <p>Highest traffic at {{(index .PeakHours 0).Hour}}:00</p>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Vehicle</th>
+                        <th>Front</th>
+                        <th>Rear</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .RecentReports}}
+                    <tr>
+                        <td>{{.Timestamp.Format "15:04:05"}}</td>
+                        <td>{{.BusID}}</td>
+                        <td>{{.Front}}</td>
+                        <td>{{.Rear}}</td>
+                        <td>{{add .Front .Rear}}</td>
+                    </tr>
                     {{else}}
-                    <p>No peak data available</p>
+                    <tr>
+                        <td colspan="5" class="empty-table">No recent reports</td>
+                    </tr>
                     {{end}}
-                </div>
-            </div>
-            <div class="insight-card">
-                <div class="insight-icon">📈</div>
-                <div class="insight-content">
-                    <h4>Trends</h4>
-                    <p>Monitor patterns for optimization</p>
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<script>
-// Filter form submission
-document.getElementById('filter-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const params = new URLSearchParams(formData);
-    window.location.href = '/analytics?' + params.toString();
-});
+<style>
+/* Analytics-specific styles */
+.analytics .drowsiness-stats,
+.analytics .passenger-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
 
-// Clear filters
-document.getElementById('clear-filters').addEventListener('click', function() {
-    window.location.href = '/analytics';
+.analytics .drowsiness-card,
+.analytics .passenger-card {
+    background-color: var(--background-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.analytics .drowsiness-card {
+    border-left-color: var(--warning-color);
+}
+
+.analytics .drowsiness-card .drowsiness-value.critical {
+    color: var(--danger-color);
+    font-weight: 700;
+}
+
+.analytics .drowsiness-icon,
+.analytics .passenger-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-background);
+    border-radius: var(--radius);
+}
+
+.analytics .drowsiness-content h4,
+.analytics .passenger-content h4 {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.analytics .drowsiness-value,
+.analytics .passenger-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.analytics .drowsiness-label,
+.analytics .passenger-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.analytics .drowsiness-summary,
+.analytics .hourly-distribution {
+    background-color: var(--background-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.analytics .drowsiness-summary h4,
+.analytics .hourly-distribution h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.analytics .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.analytics .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: var(--card-background);
+    border-radius: var(--radius);
+}
+
+.analytics .summary-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.analytics .summary-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.analytics .chart-container {
+    background-color: var(--card-background);
+    border-radius: var(--radius);
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.analytics .hourly-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    height: 200px;
+    min-width: 600px;
+}
+
+.analytics .hour-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.analytics .bar-fill {
+    width: 100%;
+    background: linear-gradient(to top, var(--primary-color), var(--primary-dark));
+    border-radius: var(--radius) var(--radius) 0 0;
+    transition: height 0.3s ease;
+    min-height: 4px;
+}
+
+.analytics .hour-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    position: absolute;
+    bottom: -1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .analytics .drowsiness-stats,
+    .analytics .passenger-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics .summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+
+// Manual refresh button
+document.getElementById('refresh-btn').addEventListener('click', function() {
+    location.reload();
 });
 
 // Add hover effects to hour bars
-document.querySelectorAll('.hour-bar').forEach(function(bar) {
+document.querySelectorAll('.hour-bar').forEach(bar => {
     bar.addEventListener('mouseenter', function() {
-        this.querySelector('.bar-fill').style.opacity = '0.8';
-    });
-    bar.addEventListener('mouseleave', function() {
-        this.querySelector('.bar-fill').style.opacity = '1';
+        const hour = this.getAttribute('data-hour');
+        const count = this.getAttribute('data-count');
+        this.setAttribute('title', `Hour ${hour}: ${count} reports`);
     });
 });
 </script>

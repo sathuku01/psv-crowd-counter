@@ -4,18 +4,18 @@ import "time"
 
 // Report represents a crowd count report from the backend
 type Report struct {
-	Timestamp time.Time `json:"timestamp"`
-	BusID     string    `json:"bus_id"`
-	Front     int       `json:"front"`
-	Rear      int       `json:"rear"`
-	SpeedKPH  float64   `json:"speed_kph"`
+	ID         string    `json:"id"`
+	BusID      string    `json:"bus_id"`
+	Front      int       `json:"front_count"`
+	Rear       int       `json:"rear_count"`
+	Passengers int       `json:"total_passengers"`
+	Timestamp  time.Time `json:"timestamp"`
 }
 
 // VehicleStatus represents the current status of a vehicle
 type VehicleStatus struct {
 	BusID          string    `json:"bus_id"`
 	PassengerCount int       `json:"passenger_count"`
-	SpeedKPH       float64   `json:"speed_kph"`
 	LastUpdated    time.Time `json:"last_updated"`
 	Status         string    `json:"status"` // "active", "inactive", "idle"
 }
@@ -25,46 +25,41 @@ type DashboardData struct {
 	TotalPassengers int             `json:"total_passengers"`
 	ActiveVehicles  int             `json:"active_vehicles"`
 	TotalVehicles   int             `json:"total_vehicles"`
-	AverageDensity  float64         `json:"average_density"`
 	Vehicles        []VehicleStatus `json:"vehicles"`
 	RecentReports   []Report        `json:"recent_reports"`
 	LastUpdated     time.Time       `json:"last_updated"`
 }
 
-// AnalyticsData represents historical analytics data
+// AnalyticsData represents the data for the analytics view
 type AnalyticsData struct {
-	HourlyData []HourlyStats `json:"hourly_data"`
-	DailyData  []DailyStats  `json:"daily_data"`
-	PeakHours  []PeakHour    `json:"peak_hours"`
+	TotalPassengers    int         `json:"total_passengers"`
+	ActiveVehicles     int         `json:"active_vehicles"`
+	TotalVehicles      int         `json:"total_vehicles"`
+	TotalReports       int         `json:"total_reports"`
+	AveragePassengers  float64     `json:"average_passengers"`
+	PeakHour           int         `json:"peak_hour"`
+	FrontDoorCount     int         `json:"front_door_count"`
+	RearDoorCount      int         `json:"rear_door_count"`
+	HourlyDistribution map[int]int `json:"hourly_distribution"`
+	MaxHourlyCount     int         `json:"max_hourly_count"`
+	BusStats           []BusStat   `json:"bus_stats"`
+	RecentReports      []Report    `json:"recent_reports"`
+	LastUpdated        time.Time   `json:"last_updated"`
+	// Driver drowsiness fields
+	EyeClosureAlerts  int     `json:"eye_closure_alerts"`
+	YawningAlerts     int     `json:"yawning_alerts"`
+	HeadPoseAlerts    int     `json:"head_pose_alerts"`
+	CriticalAlerts    int     `json:"critical_alerts"`
+	AverageEAR        float64 `json:"average_ear"`
+	AverageMAR        float64 `json:"average_mar"`
+	DetectionAccuracy float64 `json:"detection_accuracy"`
+	ActiveSessions    int     `json:"active_sessions"`
 }
 
-// HourlyStats represents statistics for an hour
-type HourlyStats struct {
-	Hour         int     `json:"hour"`
-	AverageCount float64 `json:"average_count"`
-	MaxCount     int     `json:"max_count"`
-	ReportCount  int     `json:"report_count"`
-}
-
-// DailyStats represents statistics for a day
-type DailyStats struct {
-	Date         string  `json:"date"`
-	AverageCount float64 `json:"average_count"`
-	MaxCount     int     `json:"max_count"`
-	TotalReports int     `json:"total_reports"`
-}
-
-// PeakHour represents a peak usage hour
-type PeakHour struct {
-	Hour         int     `json:"hour"`
-	AverageCount float64 `json:"average_count"`
-	Day          string  `json:"day"`
-}
-
-// FilterParams represents filtering parameters for queries
-type FilterParams struct {
-	Route     string `json:"route"`
-	VehicleID string `json:"vehicle_id"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+// BusStat represents statistics for a specific bus
+type BusStat struct {
+	BusID             string  `json:"bus_id"`
+	TotalReports      int     `json:"total_reports"`
+	AveragePassengers float64 `json:"average_passengers"`
+	MaxPassengers     int     `json:"max_passengers"`
 }

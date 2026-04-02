@@ -1,7 +1,7 @@
 {{define "content"}}
 <div class="dashboard">
     <div class="page-header">
-        <h2>Dashboard</h2>
+        <h2>Bus Monitor Dashboard</h2>
         <div class="last-updated">
             Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
             <button id="refresh-btn" class="btn btn-small">Refresh</button>
@@ -10,14 +10,6 @@
 
     <!-- Stats Cards -->
     <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon">👥</div>
-            <div class="stat-content">
-                <h3>Total Passengers</h3>
-                <p class="stat-value" id="total-passengers">{{.TotalPassengers}}</p>
-            </div>
-        </div>
-
         <div class="stat-card">
             <div class="stat-icon">🚌</div>
             <div class="stat-content">
@@ -33,48 +25,85 @@
                 <p class="stat-value" id="total-vehicles">{{.TotalVehicles}}</p>
             </div>
         </div>
+    </div>
 
-        <div class="stat-card">
-            <div class="stat-icon">📈</div>
-            <div class="stat-content">
-                <h3>Avg. Density</h3>
-                <p class="stat-value" id="avg-density">{{printf "%.1f" .AverageDensity}}</p>
+    <!-- Video/Camera Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>📹 Video/Camera Feed</h3>
+        </div>
+        <div class="video-container">
+            <div class="video-controls">
+                <button id="start-camera-btn" class="btn btn-primary">📷 Start Camera</button>
+                <button id="stop-camera-btn" class="btn btn-secondary" disabled>⏹️ Stop Camera</button>
+                <label class="btn btn-secondary">
+                    📁 Upload Video
+                    <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                </label>
+            </div>
+            <div class="video-feed">
+                <video id="video-preview" autoplay muted playsinline style="display: none;"></video>
+                <canvas id="video-canvas" style="display: none;"></canvas>
+                <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+                <div id="video-placeholder" class="video-placeholder">
+                    <p>📷 Camera or video feed will appear here</p>
+                </div>
+            </div>
+            <div class="video-status">
+                <span id="video-status">Ready</span>
             </div>
         </div>
     </div>
 
-    <!-- Vehicle Status Section -->
+    <!-- People Counting Section -->
     <div class="section">
         <div class="section-header">
-            <h3>Vehicle Status</h3>
-            <a href="/vehicles" class="btn btn-link">View All →</a>
+            <h3>👥 People Counting</h3>
         </div>
-        <div class="vehicle-grid">
-            {{range .Vehicles}}
-            <div class="vehicle-card status-{{.Status}}">
-                <div class="vehicle-header">
-                    <h4>{{.BusID}}</h4>
-                    <span class="status-badge {{.Status}}">{{.Status}}</span>
+        <div class="info-card">
+            <p>Real-time passenger counting using YOLOv8 object detection. The system detects and counts people entering and exiting buses.</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">🎯</span>
+                    <span>YOLOv8-based detection</span>
                 </div>
-                <div class="vehicle-stats">
-                    <div class="vehicle-stat">
-                        <span class="label">Passengers</span>
-                        <span class="value">{{.PassengerCount}}</span>
-                    </div>
-                    <div class="vehicle-stat">
-                        <span class="label">Speed</span>
-                        <span class="value">{{printf "%.1f" .SpeedKPH}} km/h</span>
-                    </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📈</span>
+                    <span>Real-time counting</span>
                 </div>
-                <div class="vehicle-footer">
-                    <span class="last-seen">Last seen: {{.LastUpdated.Format "15:04:05"}}</span>
+                <div class="feature-item">
+                    <span class="feature-icon">🚌</span>
+                    <span>Front and rear door tracking</span>
                 </div>
             </div>
-            {{else}}
-            <div class="empty-state">
-                <p>No vehicles currently reporting</p>
+        </div>
+    </div>
+
+    <!-- Driver Drowsiness Detection Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>😴 Driver Drowsiness Detection</h3>
+        </div>
+        <div class="info-card">
+            <p>Real-time driver monitoring using MediaPipe facial landmark detection. The system analyzes eye closure, yawning, and head pose to detect drowsiness.</p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="feature-icon">👁️</span>
+                    <span>Eye Aspect Ratio (EAR) monitoring</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">😮</span>
+                    <span>Mouth Aspect Ratio (MAR) for yawning</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🔄</span>
+                    <span>Head pose estimation</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <span>Real-time alerts</span>
+                </div>
             </div>
-            {{end}}
         </div>
     </div>
 
@@ -92,7 +121,6 @@
                         <th>Front</th>
                         <th>Rear</th>
                         <th>Total</th>
-                        <th>Speed</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -103,11 +131,10 @@
                         <td>{{.Front}}</td>
                         <td>{{.Rear}}</td>
                         <td>{{add .Front .Rear}}</td>
-                        <td>{{printf "%.1f" .SpeedKPH}} km/h</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="6" class="empty-table">No recent reports</td>
+                        <td colspan="5" class="empty-table">No recent reports</td>
                     </tr>
                     {{end}}
                 </tbody>
@@ -117,14 +144,368 @@
 </div>
 
 <script>
-// Auto-refresh every 30 seconds
-setInterval(function() {
-    location.reload();
-}, 30000);
+// Video/Camera variables
+let videoStream = null;
+let videoElement = null;
+let canvasElement = null;
+let overlayCanvas = null;
+let overlayCtx = null;
+let isProcessing = false;
+let animationFrameId = null;
+let lastDetectionResult = null;
+
+// Initialize video elements
+document.addEventListener('DOMContentLoaded', function() {
+    videoElement = document.getElementById('video-preview');
+    canvasElement = document.getElementById('video-canvas');
+    overlayCanvas = document.getElementById('overlay-canvas');
+    overlayCtx = overlayCanvas.getContext('2d');
+    
+    // Start camera button
+    document.getElementById('start-camera-btn').addEventListener('click', startCamera);
+    
+    // Stop camera button
+    document.getElementById('stop-camera-btn').addEventListener('click', stopCamera);
+    
+    // Video upload
+    document.getElementById('video-upload').addEventListener('change', handleVideoUpload);
+    
+    // Check MediaPipe server health
+    checkMediaPipeHealth();
+    
+    // Start real-time analytics updates
+    startRealTimeUpdates();
+});
+
+// Check MediaPipe server health
+async function checkMediaPipeHealth() {
+    try {
+        const response = await fetch('http://localhost:5000/health');
+        if (response.ok) {
+            const data = await response.json();
+            console.log('MediaPipe server status:', data);
+            updateVideoStatus('MediaPipe server ready');
+        } else {
+            console.warn('MediaPipe server returned error:', response.status);
+            updateVideoStatus('MediaPipe server error');
+        }
+    } catch (error) {
+        console.error('MediaPipe server not available:', error);
+        updateVideoStatus('MediaPipe server not available');
+    }
+}
+
+// Start camera
+async function startCamera() {
+    try {
+        updateVideoStatus('Requesting camera access...');
+        
+        const constraints = {
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: 'user'
+            }
+        };
+        
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = videoStream;
+        
+        videoElement.style.display = 'block';
+        document.getElementById('video-placeholder').style.display = 'none';
+        
+        document.getElementById('start-camera-btn').disabled = true;
+        document.getElementById('stop-camera-btn').disabled = false;
+        
+        updateVideoStatus('Camera active');
+        
+        // Start processing frames
+        isProcessing = true;
+        processVideoFrame();
+        
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        updateVideoStatus('Error: ' + error.message);
+    }
+}
+
+// Stop camera
+function stopCamera() {
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+    }
+    
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+    
+    isProcessing = false;
+    
+    videoElement.style.display = 'none';
+    document.getElementById('video-placeholder').style.display = 'block';
+    
+    document.getElementById('start-camera-btn').disabled = false;
+    document.getElementById('stop-camera-btn').disabled = true;
+    
+    updateVideoStatus('Camera stopped');
+}
+
+// Handle video upload
+function handleVideoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const url = URL.createObjectURL(file);
+    videoElement.src = url;
+    videoElement.style.display = 'block';
+    document.getElementById('video-placeholder').style.display = 'none';
+    
+    updateVideoStatus('Video loaded: ' + file.name);
+    
+    // Start processing frames
+    isProcessing = true;
+    processVideoFrame();
+}
+
+// Process video frames
+function processVideoFrame() {
+    if (!isProcessing) return;
+    
+    // Check if video is ready
+    if (videoElement.paused || videoElement.ended || videoElement.readyState < 2) {
+        animationFrameId = requestAnimationFrame(processVideoFrame);
+        return;
+    }
+    
+    // Draw frame to canvas
+    const ctx = canvasElement.getContext('2d');
+    canvasElement.width = videoElement.videoWidth || 640;
+    canvasElement.height = videoElement.videoHeight || 480;
+    ctx.drawImage(videoElement, 0, 0);
+    
+    // Get base64 image
+    const imageData = canvasElement.toDataURL('image/jpeg', 0.8);
+    const base64Data = imageData.split(',')[1];
+    
+    // Send to backend for processing
+    sendFrameToBackend(base64Data);
+    
+    // Redraw overlay with last detection result
+    if (lastDetectionResult) {
+        drawOverlay(lastDetectionResult);
+    }
+    
+    // Continue processing
+    animationFrameId = requestAnimationFrame(processVideoFrame);
+}
+
+// Send frame to backend
+async function sendFrameToBackend(base64Data) {
+    try {
+        const response = await fetch('http://localhost:5000/detect', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Data })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            lastDetectionResult = result;
+            
+            // Debug: Log detection result
+            if (result.face_detected) {
+                console.log('Face detected:', result);
+            }
+            
+            updateVideoStatus('Processing... EAR: ' + (result.ear || 0).toFixed(3));
+            drawOverlay(result);
+        } else {
+            console.error('MediaPipe server error:', response.status);
+        }
+    } catch (error) {
+        console.error('Error sending frame to backend:', error);
+    }
+}
+
+// Draw overlay with bounding boxes and analytics
+function drawOverlay(result) {
+    if (!overlayCanvas || !overlayCtx || !videoElement) return;
+    
+    // Get video dimensions
+    const videoWidth = videoElement.videoWidth || 640;
+    const videoHeight = videoElement.videoHeight || 480;
+    
+    // Set canvas size to match video
+    overlayCanvas.width = videoWidth;
+    overlayCanvas.height = videoHeight;
+    
+    // Clear previous drawings
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    
+    if (!result || !result.face_detected) {
+        return;
+    }
+    
+    // Draw face bounding box (green)
+    if (result.face_box && result.face_box.length === 4) {
+        const [x1, y1, x2, y2] = result.face_box;
+        overlayCtx.strokeStyle = '#00ff00';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Label
+        overlayCtx.fillStyle = '#00ff00';
+        overlayCtx.font = '14px Arial';
+        overlayCtx.fillText('Face', x1, y1 - 5);
+    }
+    
+    // Draw left eye bounding box (red)
+    if (result.left_eye_box && result.left_eye_box.length === 4) {
+        const [x1, y1, x2, y2] = result.left_eye_box;
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    }
+    
+    // Draw right eye bounding box (red)
+    if (result.right_eye_box && result.right_eye_box.length === 4) {
+        const [x1, y1, x2, y2] = result.right_eye_box;
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    }
+    
+    // Draw mouth bounding box (blue)
+    if (result.mouth_box && result.mouth_box.length === 4) {
+        const [x1, y1, x2, y2] = result.mouth_box;
+        overlayCtx.strokeStyle = '#0000ff';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    }
+    
+    // Draw analytics text
+    const analyticsText = [
+        `EAR: ${(result.ear || 0).toFixed(3)}`,
+        `MAR: ${(result.mar || 0).toFixed(3)}`,
+        `Pitch: ${(result.pitch || 0).toFixed(1)}°`,
+        `Yaw: ${(result.yaw || 0).toFixed(1)}°`,
+        `Roll: ${(result.roll || 0).toFixed(1)}°`
+    ];
+    
+    // Draw text background
+    const textX = 10;
+    const textY = 20;
+    const lineHeight = 20;
+    const textWidth = 150;
+    const textHeight = analyticsText.length * lineHeight + 10;
+    
+    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    overlayCtx.fillRect(textX - 5, textY - 15, textWidth, textHeight);
+    
+    // Draw text
+    overlayCtx.fillStyle = '#ffffff';
+    overlayCtx.font = 'bold 14px Arial';
+    analyticsText.forEach((text, index) => {
+        overlayCtx.fillText(text, textX, textY + index * lineHeight);
+    });
+    
+    // Draw eye landmarks (red lines)
+    if (result.left_eye && result.left_eye.length > 0) {
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 1;
+        overlayCtx.beginPath();
+        result.left_eye.forEach((point, index) => {
+            if (index === 0) {
+                overlayCtx.moveTo(point[0], point[1]);
+            } else {
+                overlayCtx.lineTo(point[0], point[1]);
+            }
+        });
+        overlayCtx.closePath();
+        overlayCtx.stroke();
+    }
+    
+    if (result.right_eye && result.right_eye.length > 0) {
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 1;
+        overlayCtx.beginPath();
+        result.right_eye.forEach((point, index) => {
+            if (index === 0) {
+                overlayCtx.moveTo(point[0], point[1]);
+            } else {
+                overlayCtx.lineTo(point[0], point[1]);
+            }
+        });
+        overlayCtx.closePath();
+        overlayCtx.stroke();
+    }
+    
+    // Draw nose landmarks (yellow dots)
+    if (result.nose && result.nose.length > 0) {
+        overlayCtx.strokeStyle = '#ffff00';
+        overlayCtx.lineWidth = 1;
+        result.nose.forEach(point => {
+            overlayCtx.beginPath();
+            overlayCtx.arc(point[0], point[1], 3, 0, 2 * Math.PI);
+            overlayCtx.stroke();
+        });
+    }
+}
+
+// Update video status
+function updateVideoStatus(message) {
+    document.getElementById('video-status').textContent = message;
+}
+
+// Real-time analytics updates
+function startRealTimeUpdates() {
+    // Update analytics every 5 seconds
+    setInterval(updateAnalytics, 5000);
+}
+
+// Update analytics data
+async function updateAnalytics() {
+    try {
+        const response = await fetch('/api/reports');
+        if (response.ok) {
+            const reports = await response.json();
+            updateDashboardStats(reports);
+        }
+    } catch (error) {
+        console.error('Error updating analytics:', error);
+    }
+}
+
+// Update dashboard statistics
+function updateDashboardStats(reports) {
+    // Count active vehicles (reports in last 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const activeVehicles = new Set();
+    const totalVehicles = new Set();
+    
+    reports.forEach(report => {
+        totalVehicles.add(report.bus_id);
+        const reportTime = new Date(report.timestamp);
+        if (reportTime > fiveMinutesAgo) {
+            activeVehicles.add(report.bus_id);
+        }
+    });
+    
+    // Update stat cards
+    document.getElementById('active-vehicles').textContent = activeVehicles.size;
+    document.getElementById('total-vehicles').textContent = totalVehicles.size;
+    
+    // Update last updated time
+    document.getElementById('last-updated').textContent = new Date().toLocaleString();
+}
 
 // Manual refresh button
 document.getElementById('refresh-btn').addEventListener('click', function() {
-    location.reload();
+    updateAnalytics();
 });
 </script>
 {{end}}

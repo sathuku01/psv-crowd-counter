@@ -6207,5 +6207,33 @@
     "front_count": 17,
     "rear_count": 19,
     "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:20:41.260890159+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:21:40.260880829+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:22:40.260880918+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:23:41.260879729+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 6,
+    "speed_kph": 0
   }
 ]

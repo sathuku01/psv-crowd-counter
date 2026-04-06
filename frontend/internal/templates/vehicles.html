@@ -1,0 +1,102 @@
+{{define "content"}}
+<div class="vehicles">
+    <div class="page-header">
+        <h2>🚌 Vehicle Status</h2>
+        <div class="last-updated">
+            Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
+            <button id="refresh-btn" class="btn btn-small">Refresh</button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🚌</div>
+            <div class="stat-content">
+                <h3>Active Vehicles</h3>
+                <p class="stat-value" id="active-vehicles">{{.ActiveVehicles}}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div class="stat-content">
+                <h3>Total Vehicles</h3>
+                <p class="stat-value" id="total-vehicles">{{.TotalVehicles}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicles Table -->
+    <div class="section">
+        <div class="section-header">
+            <h3>Vehicle List</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Vehicle ID</th>
+                        <th>Passenger Count</th>
+                        <th>Status</th>
+                        <th>Last Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Vehicles}}
+                    <tr>
+                        <td>{{.BusID}}</td>
+                        <td>{{.PassengerCount}}</td>
+                        <td>
+                            <span class="status-badge status-{{.Status}}">{{.Status}}</span>
+                        </td>
+                        <td>{{.LastUpdated.Format "15:04:05"}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="4" class="empty-table">No vehicles available</td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-idle {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+</style>
+
+<script>
+// Refresh button handler
+document.getElementById('refresh-btn').addEventListener('click', function() {
+    location.reload();
+});
+
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+</script>
+{{end}}

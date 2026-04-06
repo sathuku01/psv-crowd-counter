@@ -34,12 +34,40 @@
         </div>
         <div class="video-container">
             <div class="video-controls">
-                <button id="start-camera-btn" class="btn btn-primary">📷 Start Camera</button>
-                <button id="stop-camera-btn" class="btn btn-secondary" disabled>⏹️ Stop Camera</button>
-                <label class="btn btn-secondary">
-                    📁 Upload Video
-                    <input type="file" id="video-upload" accept="video/*" style="display: none;">
-                </label>
+                <div class="mode-selector">
+                    <label>Detection Mode:</label>
+                    <div class="mode-buttons">
+                        <label class="mode-btn">
+                            <input type="radio" name="detection-mode" value="sleep" checked>
+                            <span>😴 Sleep Detection</span>
+                        </label>
+                        <label class="mode-btn">
+                            <input type="radio" name="detection-mode" value="crowd">
+                            <span>👥 Crowd Counting</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="mode-selector">
+                    <label>Processing:</label>
+                    <div class="mode-buttons">
+                        <label class="mode-btn">
+                            <input type="radio" name="processing-mode" value="websocket" checked>
+                            <span>🔄 WebSocket (Real-time)</span>
+                        </label>
+                        <label class="mode-btn">
+                            <input type="radio" name="processing-mode" value="client">
+                            <span>⚡ Client-side (TensorFlow.js)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-buttons">
+                    <button id="start-camera-btn" class="btn btn-primary">📷 Start Camera</button>
+                    <button id="stop-camera-btn" class="btn btn-secondary" disabled>⏹️ Stop Camera</button>
+                    <label class="btn btn-secondary">
+                        📁 Upload Video
+                        <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                    </label>
+                </div>
             </div>
             <div class="video-feed">
                 <video id="video-preview" autoplay muted playsinline style="display: none;"></video>
@@ -153,13 +181,66 @@ let overlayCtx = null;
 let isProcessing = false;
 let animationFrameId = null;
 let lastDetectionResult = null;
+let currentMode = 'sleep'; // 'sleep' or 'crowd'
+let processingMode = 'websocket'; // 'websocket' or 'client'
+let frameSkipCounter = 0;
+const FRAME_SKIP = 3; // Process every 3rd frame for performance
+
+// WebSocket connection
+let wsConnection = null;
+let wsReconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 5;
+
+// Client-side detector
+let clientDetector = null;
+
+// Get URLs from template data
+const mediaPipeURL = '{{ .MEDIAPIPE_URL }}' || 'http://localhost:5000';
+const crowdDetectURL = '{{ .CROWD_DETECT_URL }}' || 'http://localhost:8081';
 
 // Initialize video elements
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     videoElement = document.getElementById('video-preview');
     canvasElement = document.getElementById('video-canvas');
     overlayCanvas = document.getElementById('overlay-canvas');
     overlayCtx = overlayCanvas.getContext('2d');
+    
+    // Initialize client-side detector
+    clientDetector = new window.ClientSideDetector();
+    
+    // Get current mode from radio buttons
+    const modeRadios = document.getElementsByName('detection-mode');
+    modeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            currentMode = this.value;
+            updateVideoStatus('Mode changed to: ' + (currentMode === 'sleep' ? 'Sleep Detection' : 'Crowd Counting'));
+            // Reconnect WebSocket with new mode
+            if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
+                wsConnection.close();
+                connectWebSocket();
+            }
+        });
+    });
+    
+    // Get processing mode from radio buttons
+    const procModeRadios = document.getElementsByName('processing-mode');
+    procModeRadios.forEach(radio => {
+        radio.addEventListener('change', async function() {
+            processingMode = this.value;
+            if (processingMode === 'client') {
+                updateVideoStatus('Loading TensorFlow.js model...');
+                const loaded = await clientDetector.loadModel();
+                if (loaded) {
+                    updateVideoStatus('Client-side detection ready');
+                } else {
+                    updateVideoStatus('Failed to load model, using WebSocket');
+                    processingMode = 'websocket';
+                }
+            } else {
+                updateVideoStatus('Using WebSocket connection');
+            }
+        });
+    });
     
     // Start camera button
     document.getElementById('start-camera-btn').addEventListener('click', startCamera);
@@ -177,10 +258,64 @@ document.addEventListener('DOMContentLoaded', function() {
     startRealTimeUpdates();
 });
 
+// Connect to WebSocket
+function connectWebSocket() {
+    const wsURL = `ws://${window.location.host}/ws/detect?mode=${currentMode}`;
+    
+    try {
+        wsConnection = new WebSocket(wsURL);
+        
+        wsConnection.onopen = function() {
+            console.log('WebSocket connected');
+            updateVideoStatus('WebSocket connected');
+            wsReconnectAttempts = 0;
+        };
+        
+        wsConnection.onmessage = function(event) {
+            try {
+                const result = JSON.parse(event.data);
+                lastDetectionResult = result;
+                
+                if (currentMode === 'sleep') {
+                    const ear = result.ear ? result.ear.toFixed(3) : 'N/A';
+                    const mar = result.mar ? result.mar.toFixed(3) : 'N/A';
+                    updateVideoStatus('Sleep: EAR: ' + ear + ', MAR: ' + mar);
+                } else {
+                    const count = result.count !== undefined ? result.count : 0;
+                    updateVideoStatus('Crowd: ' + count + ' detected');
+                }
+                
+                drawOverlay(result);
+            } catch (e) {
+                console.error('WebSocket message parse error:', e);
+            }
+        };
+        
+        wsConnection.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            updateVideoStatus('WebSocket error');
+        };
+        
+        wsConnection.onclose = function() {
+            console.log('WebSocket closed');
+            // Attempt to reconnect
+            if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS && isProcessing) {
+                wsReconnectAttempts++;
+                setTimeout(connectWebSocket, 2000);
+            }
+        };
+    } catch (e) {
+        console.error('WebSocket connection error:', e);
+    }
+}
+
 // Check MediaPipe server health
 async function checkMediaPipeHealth() {
+    // Get MediaPipe URL from environment or use default
+    const mediaPipeURL = window.MEDIAPIPE_URL || 'http://localhost:5000';
+    
     try {
-        const response = await fetch('http://localhost:5000/health');
+        const response = await fetch(mediaPipeURL + '/health');
         if (response.ok) {
             const data = await response.json();
             console.log('MediaPipe server status:', data);
@@ -219,6 +354,9 @@ async function startCamera() {
         
         updateVideoStatus('Camera active');
         
+        // Connect WebSocket for real-time processing
+        connectWebSocket();
+        
         // Start processing frames
         isProcessing = true;
         processVideoFrame();
@@ -243,6 +381,12 @@ function stopCamera() {
     
     isProcessing = false;
     
+    // Close WebSocket connection
+    if (wsConnection) {
+        wsConnection.close();
+        wsConnection = null;
+    }
+    
     videoElement.style.display = 'none';
     document.getElementById('video-placeholder').style.display = 'block';
     
@@ -263,6 +407,9 @@ function handleVideoUpload(event) {
     document.getElementById('video-placeholder').style.display = 'none';
     
     updateVideoStatus('Video loaded: ' + file.name);
+    
+    // Connect WebSocket for real-time processing
+    connectWebSocket();
     
     // Start processing frames
     isProcessing = true;
@@ -285,11 +432,20 @@ function processVideoFrame() {
     canvasElement.height = videoElement.videoHeight || 480;
     ctx.drawImage(videoElement, 0, 0);
     
+    // Frame throttling - skip frames for better performance
+    frameSkipCounter++;
+    if (frameSkipCounter < FRAME_SKIP) {
+        // Continue processing but don't send to backend
+        animationFrameId = requestAnimationFrame(processVideoFrame);
+        return;
+    }
+    frameSkipCounter = 0;
+    
     // Get base64 image
     const imageData = canvasElement.toDataURL('image/jpeg', 0.8);
     const base64Data = imageData.split(',')[1];
     
-    // Send to backend for processing
+    // Send to backend for processing based on current mode
     sendFrameToBackend(base64Data);
     
     // Redraw overlay with last detection result
@@ -301,10 +457,57 @@ function processVideoFrame() {
     animationFrameId = requestAnimationFrame(processVideoFrame);
 }
 
-// Send frame to backend
+// Send frame to backend based on current mode
 async function sendFrameToBackend(base64Data) {
+    // Use WebSocket if connected
+    if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
+        try {
+            wsConnection.send(JSON.stringify({
+                image: base64Data,
+                mode: currentMode
+            }));
+            return;
+        } catch (e) {
+            console.error('WebSocket send error:', e);
+        }
+    }
+    
+    // Use client-side detection if enabled
+    if (processingMode === 'client' && clientDetector) {
+        try {
+            const result = await clientDetector.detect(canvasElement);
+            lastDetectionResult = result;
+            
+            if (currentMode === 'sleep') {
+                updateVideoStatus('Client Sleep: EAR: ' + (result.ear || 'N/A'));
+            } else {
+                const count = result.count || 0;
+                updateVideoStatus('Client Crowd: ' + count + ' detected');
+            }
+            
+            drawOverlay(result);
+            return;
+        } catch (e) {
+            console.error('Client detection error:', e);
+        }
+    }
+    
+    // Fall back to HTTP API
     try {
-        const response = await fetch('http://localhost:5000/detect', {
+        let endpoint = '';
+        let statusPrefix = '';
+        
+        if (currentMode === 'sleep') {
+            // Sleep detection mode - use MediaPipe
+            endpoint = mediaPipeURL + '/detect';
+            statusPrefix = 'Sleep: ';
+        } else {
+            // Crowd counting mode - use crowd detection API
+            endpoint = crowdDetectURL + '/detect';
+            statusPrefix = 'Crowd: ';
+        }
+        
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -316,22 +519,30 @@ async function sendFrameToBackend(base64Data) {
             const result = await response.json();
             lastDetectionResult = result;
             
-            // Debug: Log detection result
-            if (result.face_detected) {
-                console.log('Face detected:', result);
+            // Display results based on mode
+            if (currentMode === 'sleep') {
+                // Sleep detection mode
+                const ear = result.ear ? result.ear.toFixed(3) : 'N/A';
+                const mar = result.mar ? result.mar.toFixed(3) : 'N/A';
+                updateVideoStatus(statusPrefix + 'EAR: ' + ear + ', MAR: ' + mar);
+            } else {
+                // Crowd counting mode
+                const count = result.count !== undefined ? result.count : (result.people_count || 0);
+                updateVideoStatus(statusPrefix + count + ' people detected');
             }
             
-            updateVideoStatus('Processing... EAR: ' + (result.ear || 0).toFixed(3));
             drawOverlay(result);
         } else {
-            console.error('MediaPipe server error:', response.status);
+            console.error('Detection server error:', response.status);
+            updateVideoStatus('Detection error: ' + response.status);
         }
     } catch (error) {
         console.error('Error sending frame to backend:', error);
+        updateVideoStatus('Connection error');
     }
 }
 
-// Draw overlay with bounding boxes and analytics
+// Draw overlay with bounding boxes and analytics based on current mode
 function drawOverlay(result) {
     if (!overlayCanvas || !overlayCtx || !videoElement) return;
     
@@ -346,7 +557,21 @@ function drawOverlay(result) {
     // Clear previous drawings
     overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
     
-    if (!result || !result.face_detected) {
+    if (!result) return;
+    
+    // Handle different based on mode
+    if (currentMode === 'sleep') {
+        // Sleep detection mode - draw face/eye/mouth landmarks
+        drawSleepDetectionOverlay(result);
+    } else {
+        // Crowd counting mode - draw person bounding boxes
+        drawCrowdOverlay(result);
+    }
+}
+
+// Draw overlay for sleep detection mode
+function drawSleepDetectionOverlay(result) {
+    if (!result.face_detected) {
         return;
     }
     
@@ -454,6 +679,49 @@ function drawOverlay(result) {
             overlayCtx.stroke();
         });
     }
+}
+
+// Draw overlay for crowd counting mode
+function drawCrowdOverlay(result) {
+    // Get person count
+    const count = result.count !== undefined ? result.count : (result.people_count || 0);
+    
+    // Draw person bounding boxes
+    const boxes = result.boxes || result.detections || [];
+    
+    boxes.forEach((box, index) => {
+        // box format: [x1, y1, x2, y2] or {x1, y1, x2, y2}
+        let x1, y1, x2, y2;
+        if (Array.isArray(box)) {
+            [x1, y1, x2, y2] = box;
+        } else {
+            x1 = box.x1 || box.left;
+            y1 = box.y1 || box.top;
+            x2 = box.x2 || box.right;
+            y2 = box.y2 || box.bottom;
+        }
+        
+        // Draw green bounding box
+        overlayCtx.strokeStyle = '#00ff00';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Label
+        overlayCtx.fillStyle = '#00ff00';
+        overlayCtx.font = '14px Arial';
+        overlayCtx.fillText('Person ' + (index + 1), x1, y1 - 5);
+    });
+    
+    // Draw count overlay
+    const textX = 10;
+    const textY = 20;
+    
+    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    overlayCtx.fillRect(textX - 5, textY - 15, 180, 40);
+    
+    overlayCtx.fillStyle = '#ffffff';
+    overlayCtx.font = 'bold 16px Arial';
+    overlayCtx.fillText('People: ' + count, textX, textY);
 }
 
 // Update video status

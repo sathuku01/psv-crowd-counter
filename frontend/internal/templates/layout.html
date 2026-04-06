@@ -31,7 +31,12 @@
         <p>PSV Crowd Counter &copy; 2024 | Real-time Passenger Monitoring System</p>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script>
+// Set global configuration from environment variables
+window.MEDIAPIPE_URL = '{{ .MEDIAPIPE_URL }}' || 'http://localhost:5000';
+</script>
+<script src="/static/js/main.js"></script>
+<script src="/static/js/tensorflow-detector.js"></script>
 </body>
 </html>
 {{end}}

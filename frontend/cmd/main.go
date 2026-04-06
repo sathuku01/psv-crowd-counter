@@ -6,25 +6,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
-	"text/template"
 
 	"psv-crowd-counter/frontend/internal/handlers"
 	"psv-crowd-counter/frontend/internal/services"
 )
-
-// Template functions
-var templateFuncs = template.FuncMap{
-	"add": func(a, b int) int {
-		return a + b
-	},
-	"sub": func(a, b int) int {
-		return a - b
-	},
-	"mul": func(a, b float64) float64 {
-		return a * b
-	},
-}
 
 func main() {
 	// Get port from environment or use default
@@ -38,6 +23,7 @@ func main() {
 
 	// Initialize handlers
 	handler := handlers.NewHandler(apiService)
+	wsHandler := handlers.NewWebSocketHandler(apiService)
 
 	// Create router
 	mux := http.NewServeMux()
@@ -45,29 +31,43 @@ func main() {
 	// Page routes
 	mux.HandleFunc("/", handler.DashboardHandler)
 	mux.HandleFunc("/analytics", handler.AnalyticsHandler)
+	mux.HandleFunc("/vehicles", handler.VehiclesHandler)
 
 	// API routes
 	mux.HandleFunc("/api/reports", handler.APIReportsHandler)
 	mux.HandleFunc("/api/health", handler.APIHealthHandler)
+	mux.HandleFunc("/api/v1/analytics", handler.APIAnalyticsHandler)
+
+	// WebSocket route for real-time video processing
+	mux.HandleFunc("/ws/detect", wsHandler.HandleWebSocket)
 
 	// Static file server
-	// Get the directory of the current source file
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		log.Printf("Warning: Could not get source file path")
-	} else {
-		// Get the directory containing this file
-		currentDir := filepath.Dir(filename)
+	// Get the directory of the current executable or use working directory
+	execDir, err := os.Getwd()
+	if err != nil {
+		log.Printf("Warning: Could not get working directory: %v", err)
+	}
 
-		// Navigate to the static directory (go up one level to frontend, then to static)
-		staticDir := filepath.Join(currentDir, "..", "static")
+	// Try multiple paths to find the static directory
+	staticPaths := []string{
+		filepath.Join(execDir, "frontend", "static"),
+		filepath.Join(execDir, "..", "static"),
+		filepath.Join(execDir, "..", "..", "frontend", "static"),
+	}
 
-		if _, err := os.Stat(staticDir); os.IsNotExist(err) {
-			log.Printf("Warning: Static directory '%s' not found", staticDir)
-		} else {
-			fs := http.FileServer(http.Dir(staticDir))
-			mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	var staticDir string
+	for _, path := range staticPaths {
+		if _, err := os.Stat(path); err == nil {
+			staticDir = path
+			break
 		}
+	}
+
+	if staticDir == "" {
+		log.Printf("Warning: Static directory not found in any of these paths: %v", staticPaths)
+	} else {
+		fs := http.FileServer(http.Dir(staticDir))
+		mux.Handle("/static/", http.StripPrefix("/static/", fs))
 	}
 
 	// Start server

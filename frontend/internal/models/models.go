@@ -6,8 +6,8 @@ import "time"
 type Report struct {
 	ID         string    `json:"id"`
 	BusID      string    `json:"bus_id"`
-	Front      int       `json:"front_count"`
-	Rear       int       `json:"rear_count"`
+	Front      int       `json:"front"`
+	Rear       int       `json:"rear"`
 	Passengers int       `json:"total_passengers"`
 	Timestamp  time.Time `json:"timestamp"`
 }
@@ -22,12 +22,14 @@ type VehicleStatus struct {
 
 // DashboardData represents the data for the dashboard view
 type DashboardData struct {
-	TotalPassengers int             `json:"total_passengers"`
-	ActiveVehicles  int             `json:"active_vehicles"`
-	TotalVehicles   int             `json:"total_vehicles"`
-	Vehicles        []VehicleStatus `json:"vehicles"`
-	RecentReports   []Report        `json:"recent_reports"`
-	LastUpdated     time.Time       `json:"last_updated"`
+	TotalPassengers  int             `json:"total_passengers"`
+	ActiveVehicles   int             `json:"active_vehicles"`
+	TotalVehicles    int             `json:"total_vehicles"`
+	Vehicles         []VehicleStatus `json:"vehicles"`
+	RecentReports    []Report        `json:"recent_reports"`
+	LastUpdated      time.Time       `json:"last_updated"`
+	MEDIAPIPE_URL    string          `json:"-"`
+	CROWD_DETECT_URL string          `json:"-"`
 }
 
 // AnalyticsData represents the data for the analytics view
@@ -54,6 +56,8 @@ type AnalyticsData struct {
 	AverageMAR        float64 `json:"average_mar"`
 	DetectionAccuracy float64 `json:"detection_accuracy"`
 	ActiveSessions    int     `json:"active_sessions"`
+	MEDIAPIPE_URL     string  `json:"-"`
+	CROWD_DETECT_URL  string  `json:"-"`
 }
 
 // BusStat represents statistics for a specific bus

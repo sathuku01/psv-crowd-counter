@@ -1,12 +1,12 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
-	"runtime"
 
 	"psv-crowd-counter/frontend/internal/services"
 )
@@ -51,24 +51,39 @@ func NewHandler(apiService *services.APIService) *Handler {
 
 // loadTemplates loads all HTML templates
 func (h *Handler) loadTemplates() {
-	// Get the directory of the current source file
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		log.Printf("Warning: Could not get source file path")
+	// Get the current working directory
+	execDir, err := os.Getwd()
+	if err != nil {
+		log.Printf("Warning: Could not get working directory: %v", err)
 		return
 	}
 
-	// Get the directory containing this file
-	currentDir := filepath.Dir(filename)
+	// Try multiple paths to find the templates directory
+	templatePaths := []string{
+		filepath.Join(execDir, "frontend", "internal", "templates"),
+		filepath.Join(execDir, "..", "frontend", "internal", "templates"),
+		filepath.Join(execDir, "..", "..", "frontend", "internal", "templates"),
+	}
 
-	// Navigate to the templates directory (go up one level to internal, then to templates)
-	templateDir := filepath.Join(currentDir, "..", "templates")
+	var templateDir string
+	for _, path := range templatePaths {
+		if _, err := os.Stat(path); err == nil {
+			templateDir = path
+			break
+		}
+	}
+
+	if templateDir == "" {
+		log.Printf("Warning: Templates directory not found in any of these paths: %v", templatePaths)
+		return
+	}
 
 	// Define template files
 	templateFiles := map[string]string{
 		"dashboard": filepath.Join(templateDir, "dashboard.html"),
 		"analytics": filepath.Join(templateDir, "analytics.html"),
 		"error":     filepath.Join(templateDir, "error.html"),
+		"vehicles":  filepath.Join(templateDir, "vehicles.html"),
 	}
 
 	// Parse templates with layout and custom functions
@@ -91,6 +106,10 @@ func (h *Handler) DashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Add MediaPipe and Crowd Detection URLs to data
+	data.MEDIAPIPE_URL = h.apiService.GetMediaPipeURL()
+	data.CROWD_DETECT_URL = h.apiService.GetCrowdDetectURL()
+
 	h.renderTemplate(w, "dashboard", data)
 }
 
@@ -102,6 +121,10 @@ func (h *Handler) AnalyticsHandler(w http.ResponseWriter, r *http.Request) {
 		h.renderError(w, "Failed to load analytics data", err.Error())
 		return
 	}
+
+	// Add MediaPipe and Crowd Detection URLs to data
+	data.MEDIAPIPE_URL = h.apiService.GetMediaPipeURL()
+	data.CROWD_DETECT_URL = h.apiService.GetCrowdDetectURL()
 
 	h.renderTemplate(w, "analytics", data)
 }
@@ -115,15 +138,13 @@ func (h *Handler) APIReportsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	// Simple JSON encoding
-	w.Write([]byte("["))
-	for i, report := range reports {
-		if i > 0 {
-			w.Write([]byte(","))
-		}
-		w.Write([]byte(fmt.Sprintf(`{"bus_id":"%s","front":%d,"rear":%d}`, report.BusID, report.Front, report.Rear)))
+
+	// Use proper JSON encoding with json.Marshal
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(reports); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-	w.Write([]byte("]"))
 }
 
 // APIHealthHandler handles API health check requests
@@ -135,13 +156,52 @@ func (h *Handler) APIHealthHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"status":"ok","backend":`))
-	if health != nil {
-		w.Write([]byte(`"connected"`))
-	} else {
-		w.Write([]byte(`"disconnected"`))
+
+	// Use proper JSON encoding
+	response := map[string]interface{}{
+		"status":  "ok",
+		"backend": "connected",
 	}
-	w.Write([]byte(`}`))
+	if health == nil {
+		response["backend"] = "disconnected"
+	}
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(response); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// VehiclesHandler handles the vehicles page
+func (h *Handler) VehiclesHandler(w http.ResponseWriter, r *http.Request) {
+	data, err := h.apiService.GetDashboardData()
+	if err != nil {
+		log.Printf("Error fetching vehicles data: %v", err)
+		h.renderError(w, "Failed to load vehicles data", err.Error())
+		return
+	}
+
+	// Add MediaPipe URL to data
+	data.MEDIAPIPE_URL = h.apiService.GetMediaPipeURL()
+
+	h.renderTemplate(w, "vehicles", data)
+}
+
+// APIAnalyticsHandler handles API requests for analytics data (JSON)
+func (h *Handler) APIAnalyticsHandler(w http.ResponseWriter, r *http.Request) {
+	analytics, err := h.apiService.GetAnalyticsData()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	encoder := json.NewEncoder(w)
+	if err := encoder.Encode(analytics); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 // renderTemplate renders a template with the given data

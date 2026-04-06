@@ -43,6 +43,49 @@
         </div>
     </div>
 
+    <!-- Live Video Feed Section -->
+    <div class="section">
+        <div class="section-header">
+            <h3>📹 Live Video Feed</h3>
+        </div>
+        <div class="video-container">
+            <div class="video-controls">
+                <div class="mode-selector">
+                    <label>Detection Mode:</label>
+                    <div class="mode-buttons">
+                        <label class="mode-btn">
+                            <input type="radio" name="detection-mode" value="sleep" checked>
+                            <span>😴 Sleep Detection</span>
+                        </label>
+                        <label class="mode-btn">
+                            <input type="radio" name="detection-mode" value="crowd">
+                            <span>👥 Crowd Counting</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-buttons">
+                    <button id="start-camera-btn" class="btn btn-primary">📷 Start Camera</button>
+                    <button id="stop-camera-btn" class="btn btn-secondary" disabled>⏹️ Stop Camera</button>
+                    <label class="btn btn-secondary">
+                        📁 Upload Video
+                        <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                    </label>
+                </div>
+            </div>
+            <div class="video-feed">
+                <video id="video-preview" autoplay muted playsinline style="display: none;"></video>
+                <canvas id="video-canvas" style="display: none;"></canvas>
+                <canvas id="overlay-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+                <div id="video-placeholder" class="video-placeholder">
+                    <p>📷 Camera or video feed will appear here</p>
+                </div>
+            </div>
+            <div class="video-status">
+                <span id="video-status">Ready</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Driver Drowsiness Section -->
     <div class="section">
         <div class="section-header">
@@ -414,5 +457,327 @@ document.querySelectorAll('.hour-bar').forEach(bar => {
         this.setAttribute('title', `Hour ${hour}: ${count} reports`);
     });
 });
+
+// Video/Camera variables for analytics page
+let videoStream = null;
+let videoElement = null;
+let canvasElement = null;
+let overlayCanvas = null;
+let overlayCtx = null;
+let isProcessing = false;
+let animationFrameId = null;
+let lastDetectionResult = null;
+let currentMode = 'sleep';
+let frameSkipCounter = 0;
+const FRAME_SKIP = 3;
+
+// Get URLs from template data
+const mediaPipeURL = '{{ .MEDIAPIPE_URL }}' || 'http://localhost:5000';
+const crowdDetectURL = '{{ .CROWD_DETECT_URL }}' || 'http://localhost:8081';
+
+// Initialize video elements
+document.addEventListener('DOMContentLoaded', function() {
+    videoElement = document.getElementById('video-preview');
+    canvasElement = document.getElementById('video-canvas');
+    overlayCanvas = document.getElementById('overlay-canvas');
+    overlayCtx = overlayCanvas.getContext('2d');
+    
+    // Get current mode from radio buttons
+    const modeRadios = document.getElementsByName('detection-mode');
+    modeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            currentMode = this.value;
+            updateVideoStatus('Mode changed to: ' + (currentMode === 'sleep' ? 'Sleep Detection' : 'Crowd Counting'));
+        });
+    });
+    
+    // Start camera button
+    const startBtn = document.getElementById('start-camera-btn');
+    if (startBtn) startBtn.addEventListener('click', startCamera);
+    
+    // Stop camera button
+    const stopBtn = document.getElementById('stop-camera-btn');
+    if (stopBtn) stopBtn.addEventListener('click', stopCamera);
+    
+    // Video upload
+    const uploadInput = document.getElementById('video-upload');
+    if (uploadInput) uploadInput.addEventListener('change', handleVideoUpload);
+    
+    // Start real-time analytics updates
+    startRealTimeUpdates();
+});
+
+// Start camera
+async function startCamera() {
+    try {
+        updateVideoStatus('Requesting camera access...');
+        
+        const constraints = {
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: 'user'
+            }
+        };
+        
+        videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = videoStream;
+        
+        videoElement.style.display = 'block';
+        document.getElementById('video-placeholder').style.display = 'none';
+        
+        document.getElementById('start-camera-btn').disabled = true;
+        document.getElementById('stop-camera-btn').disabled = false;
+        
+        updateVideoStatus('Camera active');
+        
+        isProcessing = true;
+        processVideoFrame();
+        
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        updateVideoStatus('Error: ' + error.message);
+    }
+}
+
+// Stop camera
+function stopCamera() {
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+    }
+    
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
+    
+    isProcessing = false;
+    
+    videoElement.style.display = 'none';
+    document.getElementById('video-placeholder').style.display = 'block';
+    
+    document.getElementById('start-camera-btn').disabled = false;
+    document.getElementById('stop-camera-btn').disabled = true;
+    
+    updateVideoStatus('Camera stopped');
+}
+
+// Handle video upload
+function handleVideoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const url = URL.createObjectURL(file);
+    videoElement.src = url;
+    videoElement.style.display = 'block';
+    document.getElementById('video-placeholder').style.display = 'none';
+    
+    updateVideoStatus('Video loaded: ' + file.name);
+    
+    isProcessing = true;
+    processVideoFrame();
+}
+
+// Process video frames
+function processVideoFrame() {
+    if (!isProcessing) return;
+    
+    if (videoElement.paused || videoElement.ended || videoElement.readyState < 2) {
+        animationFrameId = requestAnimationFrame(processVideoFrame);
+        return;
+    }
+    
+    const ctx = canvasElement.getContext('2d');
+    canvasElement.width = videoElement.videoWidth || 640;
+    canvasElement.height = videoElement.videoHeight || 480;
+    ctx.drawImage(videoElement, 0, 0);
+    
+    // Frame throttling
+    frameSkipCounter++;
+    if (frameSkipCounter < FRAME_SKIP) {
+        animationFrameId = requestAnimationFrame(processVideoFrame);
+        return;
+    }
+    frameSkipCounter = 0;
+    
+    const imageData = canvasElement.toDataURL('image/jpeg', 0.8);
+    const base64Data = imageData.split(',')[1];
+    
+    sendFrameToBackend(base64Data);
+    
+    if (lastDetectionResult) {
+        drawOverlay(lastDetectionResult);
+    }
+    
+    animationFrameId = requestAnimationFrame(processVideoFrame);
+}
+
+// Send frame to backend based on current mode
+async function sendFrameToBackend(base64Data) {
+    try {
+        let endpoint = '';
+        let statusPrefix = '';
+        
+        if (currentMode === 'sleep') {
+            endpoint = mediaPipeURL + '/detect';
+            statusPrefix = 'Sleep: ';
+        } else {
+            endpoint = crowdDetectURL + '/detect';
+            statusPrefix = 'Crowd: ';
+        }
+        
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64Data })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            lastDetectionResult = result;
+            
+            if (currentMode === 'sleep') {
+                const ear = result.ear ? result.ear.toFixed(3) : 'N/A';
+                const mar = result.mar ? result.mar.toFixed(3) : 'N/A';
+                updateVideoStatus(statusPrefix + 'EAR: ' + ear + ', MAR: ' + mar);
+            } else {
+                const count = result.count !== undefined ? result.count : (result.people_count || 0);
+                updateVideoStatus(statusPrefix + count + ' people detected');
+            }
+            
+            drawOverlay(result);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// Draw overlay based on mode
+function drawOverlay(result) {
+    if (!overlayCanvas || !overlayCtx || !videoElement) return;
+    
+    const videoWidth = videoElement.videoWidth || 640;
+    const videoHeight = videoElement.videoHeight || 480;
+    
+    overlayCanvas.width = videoWidth;
+    overlayCanvas.height = videoHeight;
+    
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    
+    if (!result) return;
+    
+    if (currentMode === 'sleep') {
+        drawSleepDetectionOverlay(result);
+    } else {
+        drawCrowdOverlay(result);
+    }
+}
+
+function drawSleepDetectionOverlay(result) {
+    if (!result.face_detected) return;
+    
+    if (result.face_box && result.face_box.length === 4) {
+        const [x1, y1, x2, y2] = result.face_box;
+        overlayCtx.strokeStyle = '#00ff00';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        overlayCtx.fillStyle = '#00ff00';
+        overlayCtx.font = '14px Arial';
+        overlayCtx.fillText('Face', x1, y1 - 5);
+    }
+    
+    const analyticsText = [
+        `EAR: ${(result.ear || 0).toFixed(3)}`,
+        `MAR: ${(result.mar || 0).toFixed(3)}`,
+        `Pitch: ${(result.pitch || 0).toFixed(1)}°`,
+        `Yaw: ${(result.yaw || 0).toFixed(1)}°`,
+        `Roll: ${(result.roll || 0).toFixed(1)}°`
+    ];
+    
+    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    overlayCtx.fillRect(10, 5, 150, 110);
+    
+    overlayCtx.fillStyle = '#ffffff';
+    overlayCtx.font = 'bold 14px Arial';
+    analyticsText.forEach((text, index) => {
+        overlayCtx.fillText(text, 15, 20 + index * 20);
+    });
+}
+
+function drawCrowdOverlay(result) {
+    const count = result.count !== undefined ? result.count : (result.people_count || 0);
+    const boxes = result.boxes || result.detections || [];
+    
+    boxes.forEach((box, index) => {
+        let x1, y1, x2, y2;
+        if (Array.isArray(box)) {
+            [x1, y1, x2, y2] = box;
+        } else {
+            x1 = box.x1 || box.left;
+            y1 = box.y1 || box.top;
+            x2 = box.x2 || box.right;
+            y2 = box.y2 || box.bottom;
+        }
+        
+        overlayCtx.strokeStyle = '#00ff00';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        overlayCtx.fillStyle = '#00ff00';
+        overlayCtx.font = '14px Arial';
+        overlayCtx.fillText('Person ' + (index + 1), x1, y1 - 5);
+    });
+    
+    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    overlayCtx.fillRect(10, 5, 120, 30);
+    overlayCtx.fillStyle = '#ffffff';
+    overlayCtx.font = 'bold 16px Arial';
+    overlayCtx.fillText('People: ' + count, 15, 27);
+}
+
+// Update video status
+function updateVideoStatus(message) {
+    const statusEl = document.getElementById('video-status');
+    if (statusEl) statusEl.textContent = message;
+}
+
+// Real-time analytics updates
+function startRealTimeUpdates() {
+    setInterval(updateAnalytics, 5000);
+}
+
+async function updateAnalytics() {
+    try {
+        const response = await fetch('/api/v1/analytics');
+        if (response.ok) {
+            const data = await response.json();
+            updateAnalyticsDisplay(data);
+        }
+    } catch (error) {
+        console.error('Error updating analytics:', error);
+    }
+}
+
+function updateAnalyticsDisplay(data) {
+    // Update stat values
+    if (document.getElementById('total-passengers')) {
+        document.getElementById('total-passengers').textContent = data.total_passengers || 0;
+    }
+    if (document.getElementById('active-vehicles')) {
+        document.getElementById('active-vehicles').textContent = data.active_vehicles || 0;
+    }
+    if (document.getElementById('total-vehicles')) {
+        document.getElementById('total-vehicles').textContent = data.total_vehicles || 0;
+    }
+    if (document.getElementById('total-reports')) {
+        document.getElementById('total-reports').textContent = data.total_reports || 0;
+    }
+    
+    // Update last updated
+    const now = new Date();
+    if (document.getElementById('last-updated')) {
+        document.getElementById('last-updated').textContent = now.toLocaleString();
+    }
+}
 </script>
 {{end}}

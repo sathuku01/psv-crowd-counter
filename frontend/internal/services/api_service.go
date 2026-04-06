@@ -13,8 +13,10 @@ import (
 
 // APIService handles communication with the backend API
 type APIService struct {
-	baseURL    string
-	httpClient *http.Client
+	baseURL        string
+	mediaPipeURL   string
+	crowdDetectURL string
+	httpClient     *http.Client
 }
 
 // NewAPIService creates a new API service instance
@@ -24,12 +26,34 @@ func NewAPIService() *APIService {
 		baseURL = "http://localhost:8080" // Default backend URL
 	}
 
+	mediaPipeURL := os.Getenv("MEDIAPIPE_URL")
+	if mediaPipeURL == "" {
+		mediaPipeURL = "http://localhost:5000" // Default MediaPipe URL
+	}
+
+	crowdDetectURL := os.Getenv("CROWD_DETECT_URL")
+	if crowdDetectURL == "" {
+		crowdDetectURL = "http://localhost:8081" // Default crowd detection URL
+	}
+
 	return &APIService{
-		baseURL: baseURL,
+		baseURL:        baseURL,
+		mediaPipeURL:   mediaPipeURL,
+		crowdDetectURL: crowdDetectURL,
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
 	}
+}
+
+// GetMediaPipeURL returns the MediaPipe server URL
+func (s *APIService) GetMediaPipeURL() string {
+	return s.mediaPipeURL
+}
+
+// GetCrowdDetectURL returns the crowd detection server URL
+func (s *APIService) GetCrowdDetectURL() string {
+	return s.crowdDetectURL
 }
 
 // GetReports fetches all reports from the backend

@@ -1,0 +1,13 @@
+#sample video
+internal/camera/mock/sample.mp4
+
+#.gitignore file
+.gitignore
+
+#virtual enviroment
+yolovenv/
+
+#bin files 
+bin/-e 
+#frontend binary
+frontend/frontend

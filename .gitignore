@@ -11,3 +11,6 @@ yolovenv/
 bin/-e 
 #frontend binary
 frontend/frontend
+-e 
+#bin directory
+bin/

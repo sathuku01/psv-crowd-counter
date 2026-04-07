@@ -10463,5 +10463,19 @@
     "front_count": 39,
     "rear_count": 23,
     "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:33:42.845656926+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:34:43.845656259+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 5,
+    "speed_kph": 0
   }
 ]

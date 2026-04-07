@@ -6235,5 +6235,4219 @@
     "front_count": 29,
     "rear_count": 6,
     "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:24:40.260881419+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:25:41.260897178+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:26:40.26088752+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:27:40.26088186+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:28:41.260883563+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:29:41.260879304+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:30:41.260881931+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:31:40.26088697+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:32:41.260887553+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:34:54.621218214+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:35:54.621219625+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:36:54.621219974+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:37:53.621218142+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:38:53.621228046+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:39:54.621220902+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:40:53.621227859+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:41:54.621218658+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:42:54.621228871+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:43:54.621224689+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:44:54.621219905+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:45:53.62121967+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:47:15.430658689+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:48:15.430659784+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:49:16.43064946+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:50:15.430659507+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:51:15.430650537+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:52:15.430661905+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:53:15.430651504+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:54:16.430651285+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:55:15.430650655+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:56:16.430650212+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:57:16.430652538+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:58:15.430651346+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T20:59:15.430651458+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:00:16.430653661+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:01:15.430660698+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:02:16.430660459+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:03:15.430653262+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:04:16.430652351+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:05:16.430653259+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:06:15.430658043+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:07:15.430659488+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:08:15.430653471+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:09:15.430657469+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:10:16.430652858+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:11:15.430659048+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:12:16.430652891+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:13:15.43065204+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:14:16.430650358+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:15:16.430652652+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:16:16.430651828+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:17:15.430650291+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:18:16.430651376+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:19:16.430651932+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:20:15.430659559+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:21:15.430659159+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:22:15.430652369+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:23:15.430651313+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:24:16.430658812+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:25:15.430652828+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:26:16.430652208+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:27:15.430659805+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:28:16.430661339+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:29:16.430651755+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:30:15.430656967+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:31:16.430651788+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:32:15.430660415+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:33:15.430658289+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:34:15.43065921+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:35:16.430659012+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:36:15.430652363+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:37:15.430652808+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:38:16.430665664+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:39:15.430653308+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:40:15.430658003+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:41:16.43065067+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:42:15.430653019+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:43:15.430651486+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:44:15.430658854+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:45:16.430656386+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:46:16.430676013+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:47:16.430664547+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:48:15.430660453+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:49:16.430653935+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:50:16.430667897+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:51:16.43065242+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:52:15.430659536+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:53:15.430652357+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:54:15.430652695+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:55:15.430652886+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:56:15.430661044+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:57:15.430659196+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:58:15.430658885+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T21:59:16.43065182+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:00:16.430651791+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:01:15.430659564+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:02:15.430654071+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:03:16.430651228+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:04:15.430659624+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:05:15.430657815+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:06:15.430652012+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:07:15.430651309+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:08:16.430652099+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:09:15.430651234+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:10:15.430659528+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:11:15.430651486+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:12:15.43065991+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:13:15.430657445+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:14:15.430651973+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:15:16.43065865+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:16:16.43065131+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:17:16.430658826+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:18:15.430651546+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:19:15.43065188+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:20:15.430656952+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:21:16.430651464+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:22:15.430657876+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:23:16.430651962+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:24:16.430651855+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:25:15.430653904+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:26:15.430652126+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:27:16.430651896+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:28:15.430651669+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:29:15.430659157+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:30:15.430661015+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:31:15.43065347+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:32:16.430651373+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:33:15.430652627+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:34:15.430654694+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:35:15.43065882+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:36:15.430653107+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:37:15.430660334+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:38:16.430650676+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:39:16.430651718+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:40:15.430652451+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:41:15.43065973+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:42:15.430659113+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:43:16.430652745+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:44:15.430652117+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:45:16.430665679+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:46:16.43065272+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:47:15.430651877+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:48:15.430659621+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:49:16.43065205+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:50:15.43065267+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:51:16.430652327+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:52:16.430652414+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:53:16.430651564+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:54:16.430652808+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:55:15.430651883+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:56:15.430654889+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:57:15.430652911+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:58:15.430650625+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T22:59:15.430650509+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:00:15.430654405+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:01:15.430653706+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:02:16.430658861+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:03:15.43065197+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:04:16.4306861+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:05:16.43065106+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:06:16.430658297+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:07:15.430651206+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:08:16.43065861+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:09:16.430651503+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:10:15.430651835+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:11:15.430661688+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:12:16.43065875+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:13:15.430651718+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:14:15.430652295+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:15:15.430659462+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:16:15.430657833+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:17:15.430659113+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:18:15.430658159+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:19:15.430651724+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:20:15.43065122+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:21:15.430652426+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:22:16.430651583+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:23:15.430659009+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:24:15.430658137+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:25:15.430652367+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:26:15.430651985+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:27:15.430657183+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:28:15.43065234+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:29:15.430660193+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:30:16.430652481+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:31:15.430658122+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:32:16.430659044+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:33:15.430652546+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:34:15.430652213+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:35:15.430659732+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:36:15.430654021+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:37:16.430659294+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:38:16.430660728+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:39:15.430652199+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:40:15.430652876+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:41:15.430651599+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:42:16.430652287+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:43:16.430652604+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:44:16.430659184+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:45:16.430660392+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:46:15.430651933+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:47:16.430659125+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:48:15.430658597+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:49:15.430652007+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:50:16.430651574+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:51:15.430651869+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:52:15.430652355+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:53:15.430651975+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:54:15.43065763+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:55:15.430658776+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:56:15.43066146+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:57:15.430660169+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:58:15.430658174+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-06T23:59:16.430651344+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:00:15.430660635+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:01:15.430652177+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:02:16.430651868+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:03:16.430658483+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:04:16.430651594+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:05:15.430658603+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:06:15.430658229+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:07:15.430658981+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:08:15.43065283+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:09:16.430651369+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:10:15.430651862+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:11:15.430657205+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:12:16.430649959+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:13:15.430657652+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:14:15.43065896+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:15:15.430651473+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:16:15.430650683+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:17:15.430661484+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:18:15.430652482+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:19:16.430657083+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:20:15.430652857+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:21:16.43065845+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:22:15.430652191+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:23:15.430651374+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:24:15.430661688+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:25:15.430652657+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:26:15.430656058+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:27:16.430651828+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:28:15.430657373+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:29:15.430659884+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:30:15.430660244+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:31:16.430651141+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:32:16.430657593+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:33:15.430660454+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:34:16.430651199+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:35:15.430652468+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:36:15.430651683+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:37:15.430657963+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:38:16.430658078+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:39:16.430652178+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:40:15.430652845+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:41:15.430652894+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:42:16.430657579+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:43:15.43065185+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:44:16.430653294+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:45:16.430650383+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:46:15.430652313+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:47:15.430657698+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:48:15.430651306+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:49:16.430652316+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:50:15.430652349+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:51:16.430651262+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:52:15.430660065+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:53:15.430658934+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:54:15.430658113+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:55:15.430651697+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:56:15.430652259+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:57:16.43065192+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:58:15.430658722+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T00:59:15.430658821+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:00:15.430660316+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:01:15.430696937+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:02:15.430659548+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:03:15.430658307+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:04:15.430659569+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:05:16.430652036+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:06:16.430652225+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:07:15.430660435+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:08:16.430651612+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:09:15.430658132+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:10:16.430651375+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:11:16.430660551+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:12:15.430657077+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:13:15.430651873+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:14:15.43065104+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:15:15.430651207+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:16:15.43066028+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:17:16.430651812+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:18:15.430662072+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:19:15.430652536+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:20:15.430651896+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:21:16.430651558+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:22:16.430651754+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:23:15.430660286+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:24:15.430651949+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:25:15.430660705+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:26:16.43066023+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:27:16.430652395+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:28:16.430651536+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:29:16.430651241+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:30:16.430652541+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:31:15.43065653+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:32:15.430653535+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:33:15.430652678+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:34:15.430657545+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:35:16.43065119+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:36:16.430658815+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:37:15.430652433+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:38:15.430659711+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:39:15.430660984+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:40:15.430652491+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:41:16.430660769+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:42:15.430652522+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:43:15.430658997+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:44:15.430660411+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:45:15.430657641+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:46:16.430652517+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:47:15.430651616+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:48:16.430655829+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:49:15.430651955+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:50:15.43065958+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:51:16.430678388+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:52:15.430652563+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:53:15.430660359+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:54:15.430651568+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:55:15.430657408+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:56:15.430652671+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:57:16.430652098+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:58:15.430651283+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T01:59:16.430659804+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:00:15.4306511+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:01:15.430658356+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:02:15.430652887+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:03:15.430652906+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:04:16.430659955+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:05:16.430651348+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:06:15.430653491+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:07:16.430651573+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:08:15.430659946+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:09:16.430651183+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:10:15.430651344+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:11:15.430670426+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:12:15.430661594+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:13:15.4306516+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:14:16.430652003+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:15:16.430658091+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:16:15.430651551+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:17:15.430660667+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:18:15.430651706+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:19:15.430658015+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:20:15.430660001+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:21:15.430661549+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:22:16.430653371+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:23:15.430652438+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:24:15.430654401+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:25:16.430651886+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:26:15.430657984+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:27:15.430659878+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:28:16.430659515+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:29:16.430658643+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:30:15.430652302+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:31:16.430652257+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:32:16.43065261+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:33:15.430651706+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:34:16.430661301+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:35:16.43065823+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:36:16.43066044+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:37:15.430660759+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:38:15.430652734+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:39:15.430658969+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:40:15.430660093+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:41:15.430652255+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:42:15.430660101+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:43:15.430651674+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:44:16.430652955+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:45:15.430660532+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:46:15.430651923+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:47:15.430652621+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:48:16.430652633+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:49:16.430652176+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:50:16.430651792+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:51:16.430653723+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:52:15.430660111+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:53:16.430651789+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:54:16.430652066+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:55:16.430652825+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:56:15.430660703+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:57:15.430653109+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:58:16.430658078+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T02:59:16.430651743+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:00:15.430661282+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:01:15.430652497+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:02:16.430652957+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:03:15.430659439+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:04:15.430657433+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:05:15.43065843+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:06:15.430661093+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:07:15.430652744+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:08:15.430652998+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:09:16.430651129+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:10:15.430660503+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:11:16.430651924+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:12:16.430651968+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:13:16.430661393+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:14:16.430656504+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:15:15.430651067+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:16:15.430660499+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:17:15.430652095+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:18:15.430651824+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:19:15.430652506+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:20:15.430652528+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:21:15.430658581+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:22:15.430660591+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:23:15.430659993+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:24:16.430658965+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:25:16.430657289+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:26:16.430659489+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:27:16.430660487+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:28:15.430653823+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:29:15.430660155+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:30:15.430651919+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:31:16.430652673+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:32:15.430653174+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:33:16.430651535+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:34:15.430656935+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:35:15.430657999+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:36:15.430658306+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:37:15.430659236+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:38:16.430652269+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:39:15.43065806+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:40:15.430659641+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:41:15.430662642+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:42:15.430660779+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:43:16.430651137+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:44:16.430651836+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:45:16.430651837+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:46:15.430652151+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:47:15.430652739+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:48:15.430659115+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:49:16.430651458+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:50:16.4306514+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:51:15.430651671+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:52:16.43065208+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:53:15.430652333+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:54:15.43065765+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:55:15.4306586+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:56:15.430652349+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:57:16.430657405+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 25,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:58:15.4306516+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T03:59:16.430651808+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:00:16.430659192+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:01:15.430657811+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:02:16.430658039+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:03:15.430658417+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:04:15.430657415+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:05:16.430658013+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:06:15.430652393+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:07:16.430651709+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:08:16.430651277+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:09:15.430659975+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:10:15.430653429+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:11:15.430658858+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:12:15.430657044+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:13:15.43065242+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:14:15.430651531+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:15:15.430659042+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:16:16.430651254+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:17:15.430651404+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:18:16.4306522+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:19:15.430651163+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 32,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:20:15.430652167+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:21:15.430651835+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:22:16.430651894+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 10,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:23:15.430659596+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:24:15.430659686+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:25:15.430652636+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 24,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:26:16.430658735+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:27:16.430651908+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:28:15.430660145+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:29:15.430659015+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:30:16.430653398+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:31:16.430659615+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:32:15.430651594+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:33:15.430657131+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:34:16.430659889+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:35:15.430659891+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:36:16.430652163+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:37:15.430659454+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:38:15.430652449+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 2,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:39:15.430659855+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:40:15.430659888+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:41:16.430652029+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:42:15.430652294+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:43:16.430652734+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:44:15.430656842+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:45:16.430657366+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:46:15.43065878+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 19,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:47:15.430660199+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:48:16.430655894+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:49:15.430653336+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 1,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:50:15.430653075+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:51:15.430652456+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:52:15.430652381+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:53:15.430651699+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:54:46.547130351+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:55:47.547129383+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 37,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:56:47.54713739+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:57:46.547135327+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:58:47.547128203+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T04:59:47.547130683+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:00:46.547129254+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 28,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:01:46.547130074+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:02:46.54712711+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:03:46.54712965+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 22,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:04:46.54712727+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:05:46.547135747+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:06:46.547129115+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:07:47.547130098+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:08:47.547137178+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 9,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:09:46.547130059+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:10:46.547136194+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:11:47.547127993+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:12:47.547129392+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:13:47.547128046+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:14:46.547136882+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:15:47.54712956+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 39,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:17:57.595574662+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:18:57.59557546+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:19:58.595576431+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:20:57.595577041+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:22:58.221089666+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:24:04.270302148+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:25:04.270301939+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:26:05.27030068+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:27:04.270303136+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:28:04.270306948+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:29:05.270297973+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:30:04.270299038+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:31:05.270300503+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:32:04.270299616+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:33:04.270300507+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 37,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:34:04.270306164+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 5,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:35:04.270299382+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 23,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:36:04.270301446+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:37:04.270302233+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:38:05.270299538+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:39:04.270310923+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 27,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:40:05.270300331+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:41:04.270300416+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 38,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:42:05.270300149+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 7,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:43:04.270298838+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 38,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:44:04.270299282+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 12,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:45:04.270298806+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 15,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:46:05.270299426+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 23,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:47:05.270299437+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 0,
+    "rear_count": 16,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:48:05.270299158+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:49:05.270300374+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 18,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:50:05.270300598+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 35,
+    "rear_count": 15,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:51:30.931134082+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 24,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:52:30.931136169+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 14,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:53:30.931137066+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 11,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:54:30.931135765+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 32,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:55:30.931136038+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 20,
+    "rear_count": 29,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:56:30.931136564+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:57:30.931144935+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:58:30.931135958+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 7,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T05:59:30.931144347+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 6,
+    "rear_count": 36,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:00:30.931146696+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 2,
+    "rear_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:01:31.931134893+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:02:30.931137082+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 8,
+    "rear_count": 34,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:03:31.931136482+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 34,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:04:30.93114312+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:05:30.931135274+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 18,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:06:31.931134884+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 4,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:07:30.931135898+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 19,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:08:30.931144389+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 21,
+    "rear_count": 3,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:09:30.931139052+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 14,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:10:30.931145671+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 31,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:11:31.931133482+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 11,
+    "rear_count": 27,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:12:30.931133518+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 5,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:13:31.931136344+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 33,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:14:31.931134768+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 36,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:15:31.931135512+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 31,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:16:31.931136778+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 20,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:17:31.931133856+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 39,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:18:42.845656701+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 28,
+    "rear_count": 13,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:19:42.845656422+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 16,
+    "rear_count": 17,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:20:42.845657952+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 17,
+    "rear_count": 35,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:21:42.845659734+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 8,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:22:43.845659395+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 13,
+    "rear_count": 6,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:23:42.845658979+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 4,
+    "rear_count": 30,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:24:43.845658028+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 25,
+    "rear_count": 12,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:25:42.845659962+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 30,
+    "rear_count": 26,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:26:43.845658313+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 3,
+    "rear_count": 22,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:27:43.845658318+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 33,
+    "rear_count": 10,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:28:42.845656155+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 29,
+    "rear_count": 21,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:29:42.845657471+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 9,
+    "rear_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T06:30:43.845668814+03:00",
+    "bus_id": "BUS-001",
+    "front_count": 26,
+    "rear_count": 16,
+    "speed_kph": 0
   }
 ]

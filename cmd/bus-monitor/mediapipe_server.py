@@ -511,4 +511,8 @@ def detect():
 
 if __name__ == '__main__':
     logger.info("Starting MediaPipe Face Landmark Detection Server on port 5000")
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    # Disable Flask's default timeout by using a custom server
+    from werkzeug.serving import make_server
+    server = make_server('0.0.0.0', 5000, app, threaded=True)
+    server.timeout = 0  # No timeout on connections
+    server.serve_forever()

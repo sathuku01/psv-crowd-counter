@@ -189,7 +189,9 @@ const FRAME_SKIP = 3; // Process every 3rd frame for performance
 // WebSocket connection
 let wsConnection = null;
 let wsReconnectAttempts = 0;
-const MAX_RECONNECT_ATTEMPTS = 5;
+let wsReconnectDelay = 1000; // Start with 1 second delay
+const MAX_RECONNECT_ATTEMPTS = 10;
+let wsPingInterval = null;
 
 // Client-side detector
 let clientDetector = null;
@@ -269,22 +271,44 @@ function connectWebSocket() {
             console.log('WebSocket connected');
             updateVideoStatus('WebSocket connected');
             wsReconnectAttempts = 0;
+            wsReconnectDelay = 1000; // Reset delay on successful connection
+            
+            // Start ping interval to keep connection alive
+            if (wsPingInterval) clearInterval(wsPingInterval);
+            wsPingInterval = setInterval(() => {
+                if (wsConnection && wsConnection.readyState === WebSocket.OPEN) {
+                    console.log('Sending ping...');
+                    wsConnection.send(JSON.stringify({type: 'ping'}));
+                }
+            }, 10000); // Ping every 10 seconds
         };
         
         wsConnection.onmessage = function(event) {
             try {
                 const result = JSON.parse(event.data);
+                
+                // Ignore ping responses
+                if (result.type === 'pong') {
+                    console.log('Received pong');
+                    return;
+                }
+                
                 lastDetectionResult = result;
+                
+                // Debug logging
+                console.log('Detection result:', JSON.stringify(result).substring(0, 200));
                 
                 if (currentMode === 'sleep') {
                     const ear = result.ear ? result.ear.toFixed(3) : 'N/A';
                     const mar = result.mar ? result.mar.toFixed(3) : 'N/A';
-                    updateVideoStatus('Sleep: EAR: ' + ear + ', MAR: ' + mar);
+                    const faceDetected = result.face_detected ? 'Yes' : 'No';
+                    updateVideoStatus('Face: ' + faceDetected + ' | EAR: ' + ear + ' | MAR: ' + mar);
                 } else {
                     const count = result.count !== undefined ? result.count : 0;
                     updateVideoStatus('Crowd: ' + count + ' detected');
                 }
                 
+                // Always draw overlay when we get a result
                 drawOverlay(result);
             } catch (e) {
                 console.error('WebSocket message parse error:', e);
@@ -298,10 +322,25 @@ function connectWebSocket() {
         
         wsConnection.onclose = function() {
             console.log('WebSocket closed');
-            // Attempt to reconnect
-            if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS && isProcessing) {
+            
+            // Clear ping interval
+            if (wsPingInterval) {
+                clearInterval(wsPingInterval);
+                wsPingInterval = null;
+            }
+            
+            updateVideoStatus('WebSocket disconnected, reconnecting...');
+            
+            // Attempt to reconnect with exponential backoff - always try, not just when processing
+            // The isProcessing flag might be false when it should be true
+            if (wsReconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                 wsReconnectAttempts++;
-                setTimeout(connectWebSocket, 2000);
+                const delay = Math.min(wsReconnectDelay * Math.pow(1.5, wsReconnectAttempts - 1), 30000);
+                console.log('Attempting reconnect ' + wsReconnectAttempts + '/' + MAX_RECONNECT_ATTEMPTS + ' in ' + delay + 'ms');
+                setTimeout(connectWebSocket, delay);
+            } else {
+                // Fall back to HTTP if WebSocket fails completely
+                updateVideoStatus('WebSocket failed, using HTTP fallback');
             }
         };
     } catch (e) {
@@ -576,7 +615,7 @@ function drawSleepDetectionOverlay(result) {
     }
     
     // Draw face bounding box (green)
-    if (result.face_box && result.face_box.length === 4) {
+    if (result.face_box && result.face_box.length === 4 && result.face_box[2] > 0) {
         const [x1, y1, x2, y2] = result.face_box;
         overlayCtx.strokeStyle = '#00ff00';
         overlayCtx.lineWidth = 2;
@@ -589,27 +628,42 @@ function drawSleepDetectionOverlay(result) {
     }
     
     // Draw left eye bounding box (red)
-    if (result.left_eye_box && result.left_eye_box.length === 4) {
+    if (result.left_eye_box && result.left_eye_box.length === 4 && result.left_eye_box[2] > 0) {
         const [x1, y1, x2, y2] = result.left_eye_box;
         overlayCtx.strokeStyle = '#ff0000';
         overlayCtx.lineWidth = 2;
         overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Label
+        overlayCtx.fillStyle = '#ff0000';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('L-Eye', x1, y1 - 5);
     }
     
     // Draw right eye bounding box (red)
-    if (result.right_eye_box && result.right_eye_box.length === 4) {
+    if (result.right_eye_box && result.right_eye_box.length === 4 && result.right_eye_box[2] > 0) {
         const [x1, y1, x2, y2] = result.right_eye_box;
         overlayCtx.strokeStyle = '#ff0000';
         overlayCtx.lineWidth = 2;
         overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Label
+        overlayCtx.fillStyle = '#ff0000';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('R-Eye', x1, y1 - 5);
     }
     
     // Draw mouth bounding box (blue)
-    if (result.mouth_box && result.mouth_box.length === 4) {
+    if (result.mouth_box && result.mouth_box.length === 4 && result.mouth_box[2] > 0) {
         const [x1, y1, x2, y2] = result.mouth_box;
         overlayCtx.strokeStyle = '#0000ff';
         overlayCtx.lineWidth = 2;
         overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+        
+        // Label
+        overlayCtx.fillStyle = '#0000ff';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('Mouth', x1, y1 - 5);
     }
     
     // Draw analytics text
@@ -731,8 +785,8 @@ function updateVideoStatus(message) {
 
 // Real-time analytics updates
 function startRealTimeUpdates() {
-    // Update analytics every 5 seconds
-    setInterval(updateAnalytics, 5000);
+    // Update analytics every 2 seconds
+    setInterval(updateAnalytics, 2000);
 }
 
 // Update analytics data

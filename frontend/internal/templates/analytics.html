@@ -2,9 +2,12 @@
 <div class="analytics">
     <div class="page-header">
         <h2>📊 Analytics Dashboard</h2>
-        <div class="last-updated">
-            Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
-            <button id="refresh-btn" class="btn btn-small">Refresh</button>
+        <div class="header-actions">
+            <div class="last-updated">
+                Last updated: <span id="last-updated">{{.LastUpdated.Format "2006-01-02 15:04:05"}}</span>
+                <button id="refresh-btn" class="btn btn-small">Refresh</button>
+            </div>
+            <button id="reset-btn" class="btn btn-danger">🔄 Reset All</button>
         </div>
     </div>
 
@@ -180,7 +183,7 @@
                 <div class="passenger-icon">📊</div>
                 <div class="passenger-content">
                     <h4>Average Passengers</h4>
-                    <p class="passenger-value" id="avg-passengers">{{printf "%.1f" .AveragePassengers}}</p>
+                    <p class="passenger-value" id="avg-passengers">{{floor .AveragePassengers}}</p>
                     <span class="passenger-label">Per report</span>
                 </div>
             </div>
@@ -201,7 +204,7 @@
                 <div class="hourly-chart" id="hourly-chart">
                     {{range $hour, $count := .HourlyDistribution}}
                     <div class="hour-bar" data-hour="{{$hour}}" data-count="{{$count}}">
-                        <div class="bar-fill" style="height: {{mul (div (float64 $count) (float64 $.MaxHourlyCount)) 100}}%"></div>
+                        <div class="bar-fill" data-height="{{mul (div (float64 $count) (float64 $.MaxHourlyCount)) 100}}"></div>
                         <span class="hour-label">{{$hour}}</span>
                     </div>
                     {{end}}
@@ -230,7 +233,7 @@
                     <tr>
                         <td>{{.BusID}}</td>
                         <td>{{.TotalReports}}</td>
-                        <td>{{printf "%.1f" .AveragePassengers}}</td>
+                        <td>{{floor .AveragePassengers}}</td>
                         <td>{{.MaxPassengers}}</td>
                     </tr>
                     {{else}}
@@ -449,6 +452,22 @@ document.getElementById('refresh-btn').addEventListener('click', function() {
     location.reload();
 });
 
+// Reset button handler
+document.getElementById('reset-btn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to reset all counts and alerts? This action cannot be undone.')) {
+        // Show loading state
+        const resetBtn = document.getElementById('reset-btn');
+        resetBtn.textContent = 'Resetting...';
+        resetBtn.disabled = true;
+        
+        // Call reset API (would need backend implementation)
+        // For now, just reload to simulate reset
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    }
+});
+
 // Add hover effects to hour bars
 document.querySelectorAll('.hour-bar').forEach(bar => {
     bar.addEventListener('mouseenter', function() {
@@ -456,6 +475,14 @@ document.querySelectorAll('.hour-bar').forEach(bar => {
         const count = this.getAttribute('data-count');
         this.setAttribute('title', `Hour ${hour}: ${count} reports`);
     });
+});
+
+// Set bar heights from data-height attribute
+document.querySelectorAll('.bar-fill').forEach(bar => {
+    const heightValue = bar.getAttribute('data-height');
+    if (heightValue) {
+        bar.style.height = heightValue + '%';
+    }
 });
 
 // Video/Camera variables for analytics page

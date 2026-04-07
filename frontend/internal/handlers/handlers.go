@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"log"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -30,6 +31,9 @@ var templateFuncs = template.FuncMap{
 	},
 	"float64": func(i int) float64 {
 		return float64(i)
+	},
+	"floor": func(f float64) float64 {
+		return math.Floor(f)
 	},
 }
 

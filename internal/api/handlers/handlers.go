@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -11,23 +12,30 @@ import (
 
 	"psv-crowd-counter/internal/api/models"
 	coremodels "psv-crowd-counter/internal/core/models"
+	"psv-crowd-counter/internal/detector"
 	"psv-crowd-counter/internal/service"
 	"psv-crowd-counter/internal/storage"
+
+	"gocv.io/x/gocv"
+	"nhooyr.io/websocket"
+	"nhooyr.io/websocket/wsjson"
 )
 
 // Handler holds dependencies for API handlers
 type Handler struct {
-	store     storage.Store
-	processor *service.Processor
-	startTime time.Time
+	store      storage.Store
+	processor  *service.Processor
+	startTime  time.Time
+	detections chan detector.Result
 }
 
 // NewHandler creates a new Handler instance
-func NewHandler(store storage.Store, processor *service.Processor) *Handler {
+func NewHandler(store storage.Store, processor *service.Processor, detections chan detector.Result) *Handler {
 	return &Handler{
-		store:     store,
-		processor: processor,
-		startTime: time.Now(),
+		store:      store,
+		processor:  processor,
+		startTime:  time.Now(),
+		detections: detections,
 	}
 }
 
@@ -129,7 +137,7 @@ func (h *Handler) GetBusStatus(w http.ResponseWriter, r *http.Request) {
 	for _, report := range reports {
 		status, exists := busStatuses[report.BusID]
 		if !exists || report.Timestamp.After(status.LastUpdated) {
-			totalPassengers := report.Front + report.Rear
+			totalPassengers := report.PassengerCount
 			busStatuses[report.BusID] = &models.BusStatus{
 				BusID:         report.BusID,
 				Passengers:    totalPassengers,
@@ -188,10 +196,9 @@ func (h *Handler) CreateReport(w http.ResponseWriter, r *http.Request) {
 
 	// Create report using core model
 	report := coremodels.Report{
-		Timestamp: time.Now().UTC(),
-		BusID:     req.BusID,
-		Front:     req.Front,
-		Rear:      req.Rear,
+		Timestamp:      time.Now().UTC(),
+		BusID:          req.BusID,
+		PassengerCount: req.PassengerCount,
 	}
 
 	// Store report
@@ -218,6 +225,109 @@ func (h *Handler) GetProcessorStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeSuccess(w, http.StatusOK, status)
+}
+
+// LiveDetections handles WebSocket connections for real-time detection results
+func (h *Handler) LiveDetections(w http.ResponseWriter, r *http.Request) {
+	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+		CompressionMode: websocket.CompressionContextTakeover,
+	})
+	if err != nil {
+		log.Printf("WebSocket accept error: %v", err)
+		return
+	}
+	defer conn.Close(websocket.StatusNormalClosure, "Connection closed")
+
+	log.Printf("WebSocket connected: %s", r.URL.Query().Get("mode"))
+
+	for {
+		// Read message from client (contains base64 image)
+		var msg map[string]interface{}
+		err := wsjson.Read(r.Context(), conn, &msg)
+		if err != nil {
+			log.Printf("WebSocket read error: %v", err)
+			return
+		}
+
+		// Handle ping/pong
+		if msgType, ok := msg["type"].(string); ok && msgType == "ping" {
+			wsjson.Write(r.Context(), conn, map[string]string{"type": "pong"})
+			continue
+		}
+
+		// Get image data
+		imageB64, ok := msg["image"].(string)
+		if !ok {
+			continue
+		}
+
+		// Process detection
+		result := h.processImageForDetection(imageB64)
+		if result == nil {
+			continue
+		}
+
+		// Send results back to client
+		if err := wsjson.Write(r.Context(), conn, result); err != nil {
+			log.Printf("WebSocket write error: %v", err)
+			return
+		}
+	}
+}
+
+// processImageForDetection processes a base64 image and returns detection results
+func (h *Handler) processImageForDetection(imageB64 string) map[string]interface{} {
+	// Decode base64 image
+	imgData, err := base64.StdEncoding.DecodeString(imageB64)
+	if err != nil {
+		// Try URL encoding
+		imgData, err = base64.URLEncoding.DecodeString(imageB64)
+		if err != nil {
+			log.Printf("Failed to decode base64: %v", err)
+			return nil
+		}
+	}
+
+	// Decode JPEG - IMDecode returns image and error
+	img, err := gocv.IMDecode(imgData, gocv.IMReadColor)
+	if err != nil {
+		log.Printf("Failed to decode image: %v", err)
+		return nil
+	}
+	if img.Empty() {
+		log.Printf("Empty image")
+		return nil
+	}
+	defer img.Close()
+
+	// Create HOG descriptor for person detection
+	hog := gocv.NewHOGDescriptor()
+	defer hog.Close()
+	hog.SetSVMDetector(gocv.HOGDefaultPeopleDetector())
+
+	// Detect people
+	rects := hog.DetectMultiScale(img)
+
+	// Convert to boxes format
+	boxes := make([]map[string]interface{}, len(rects))
+	for i, rect := range rects {
+		boxes[i] = map[string]interface{}{
+			"x1":   rect.Min.X,
+			"y1":   rect.Min.Y,
+			"x2":   rect.Max.X,
+			"y2":   rect.Max.Y,
+			"type": "person",
+		}
+	}
+
+	result := map[string]interface{}{
+		"count": len(rects),
+		"boxes": boxes,
+	}
+
+	log.Printf("Detection result: %d people found", len(rects))
+
+	return result
 }
 
 // Helper functions
@@ -364,7 +474,7 @@ func calculateAnalytics(reports []coremodels.Report) models.Analytics {
 	hourlyDist := make(map[int]int)
 
 	for _, report := range reports {
-		passengers := report.Front + report.Rear
+		passengers := report.PassengerCount
 		totalPassengers += float64(passengers)
 
 		// Bus stats
@@ -433,12 +543,8 @@ func validateReportRequest(req models.ReportRequest) []models.ValidationError {
 		errors = append(errors, models.ValidationError{Field: "bus_id", Message: "Bus ID is required"})
 	}
 
-	if req.Front < 0 {
-		errors = append(errors, models.ValidationError{Field: "front", Message: "Front count must be non-negative"})
-	}
-
-	if req.Rear < 0 {
-		errors = append(errors, models.ValidationError{Field: "rear", Message: "Rear count must be non-negative"})
+	if req.PassengerCount < 0 {
+		errors = append(errors, models.ValidationError{Field: "passenger_count", Message: "Passenger count must be non-negative"})
 	}
 
 	return errors
@@ -450,13 +556,10 @@ func generateReportID(report coremodels.Report) string {
 
 func convertToAPIReport(report coremodels.Report) models.APIReport {
 	return models.APIReport{
-		ID:         generateReportID(report),
-		BusID:      report.BusID,
-		Front:      report.Front,
-		Rear:       report.Rear,
-		Passengers: report.Front + report.Rear,
-
-		Timestamp: report.Timestamp,
+		ID:             generateReportID(report),
+		BusID:          report.BusID,
+		PassengerCount: report.PassengerCount,
+		Timestamp:      report.Timestamp,
 	}
 }
 

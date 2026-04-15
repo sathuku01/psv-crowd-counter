@@ -162,20 +162,11 @@
         </div>
         <div class="passenger-stats">
             <div class="passenger-card">
-                <div class="passenger-icon">🚪</div>
+                <div class="passenger-icon">👥</div>
                 <div class="passenger-content">
-                    <h4>Front Door Count</h4>
-                    <p class="passenger-value" id="front-door-count">{{.FrontDoorCount}}</p>
-                    <span class="passenger-label">Total passengers entered</span>
-                </div>
-            </div>
-
-            <div class="passenger-card">
-                <div class="passenger-icon">🚪</div>
-                <div class="passenger-content">
-                    <h4>Rear Door Count</h4>
-                    <p class="passenger-value" id="rear-door-count">{{.RearDoorCount}}</p>
-                    <span class="passenger-label">Total passengers entered</span>
+                    <h4>Total Passenger Count</h4>
+                    <p class="passenger-value" id="total-passengers-count">{{.TotalPassengers}}</p>
+                    <span class="passenger-label">Total passengers detected</span>
                 </div>
             </div>
 
@@ -257,9 +248,7 @@
                     <tr>
                         <th>Time</th>
                         <th>Vehicle</th>
-                        <th>Front</th>
-                        <th>Rear</th>
-                        <th>Total</th>
+                        <th>Passengers</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -267,13 +256,11 @@
                     <tr>
                         <td>{{.Timestamp.Format "15:04:05"}}</td>
                         <td>{{.BusID}}</td>
-                        <td>{{.Front}}</td>
-                        <td>{{.Rear}}</td>
-                        <td>{{add .Front .Rear}}</td>
+                        <td>{{.PassengerCount}}</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="5" class="empty-table">No recent reports</td>
+                        <td colspan="3" class="empty-table">No recent reports</td>
                     </tr>
                     {{end}}
                 </tbody>
@@ -442,15 +429,37 @@
 </style>
 
 <script>
-// Auto-refresh every 30 seconds
+// Auto-refresh analytics data every 10 seconds
 setInterval(function() {
-    location.reload();
-}, 30000);
+    refreshAnalytics();
+}, 10000);
 
 // Manual refresh button
 document.getElementById('refresh-btn').addEventListener('click', function() {
-    location.reload();
+    refreshAnalytics();
 });
+
+// Function to refresh analytics data without full page reload
+async function refreshAnalytics() {
+    try {
+        const response = await fetch('/api/v1/analytics');
+        const data = await response.json();
+
+        // Update the stats
+        document.getElementById('total-passengers').textContent = data.total_passengers || 0;
+        document.getElementById('active-vehicles').textContent = data.active_vehicles || 0;
+        document.getElementById('total-vehicles').textContent = data.total_vehicles || 0;
+        document.getElementById('total-reports').textContent = data.total_reports || 0;
+
+        // Update last updated time
+        const now = new Date();
+        document.getElementById('last-updated').textContent = now.toLocaleString();
+
+        console.log('Analytics refreshed:', data);
+    } catch (error) {
+        console.error('Failed to refresh analytics:', error);
+    }
+}
 
 // Reset button handler
 document.getElementById('reset-btn').addEventListener('click', function() {
@@ -502,13 +511,68 @@ const FRAME_SKIP = 3;
 const mediaPipeURL = '{{ .MEDIAPIPE_URL }}' || 'http://localhost:5000';
 const crowdDetectURL = '{{ .CROWD_DETECT_URL }}' || 'http://localhost:8081';
 
+// WebSocket for live detections
+let detectionSocket = null;
+
+// Connect to detection websocket
+function connectDetectionWebSocket() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws/detections`;
+
+    detectionSocket = new WebSocket(wsUrl);
+
+    detectionSocket.onopen = function(event) {
+        console.log('Detection WebSocket connected');
+    };
+
+    detectionSocket.onmessage = function(event) {
+        try {
+            const data = JSON.parse(event.data);
+            drawDetections(data.detections || []);
+        } catch (error) {
+            console.error('Error parsing detection data:', error);
+        }
+    };
+
+    detectionSocket.onclose = function(event) {
+        console.log('Detection WebSocket closed, reconnecting...');
+        setTimeout(connectDetectionWebSocket, 1000);
+    };
+
+    detectionSocket.onerror = function(error) {
+        console.error('Detection WebSocket error:', error);
+    };
+}
+
+// Draw bounding boxes on overlay canvas
+function drawDetections(detections) {
+    if (!overlayCtx) return;
+
+    // Clear previous drawings
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+    detections.forEach(detection => {
+        overlayCtx.strokeStyle = detection.type === 'person' ? '#00ff00' : '#ff0000';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(detection.x, detection.y, detection.width, detection.height);
+
+        // Draw label
+        overlayCtx.fillStyle = detection.type === 'person' ? '#00ff00' : '#ff0000';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText(detection.type, detection.x, detection.y - 5);
+    });
+}
+
 // Initialize video elements
 document.addEventListener('DOMContentLoaded', function() {
     videoElement = document.getElementById('video-preview');
     canvasElement = document.getElementById('video-canvas');
     overlayCanvas = document.getElementById('overlay-canvas');
     overlayCtx = overlayCanvas.getContext('2d');
-    
+
+    // Connect to detection websocket
+    connectDetectionWebSocket();
+
     // Get current mode from radio buttons
     const modeRadios = document.getElementsByName('detection-mode');
     modeRadios.forEach(radio => {
@@ -537,8 +601,16 @@ document.addEventListener('DOMContentLoaded', function() {
 // Start camera
 async function startCamera() {
     try {
+        // Update button states
+        const startBtn = document.getElementById('start-camera-btn');
+        const stopBtn = document.getElementById('stop-camera-btn');
+
+        startBtn.disabled = true;
+        startBtn.textContent = '📷 Starting...';
+        stopBtn.disabled = true;
+
         updateVideoStatus('Requesting camera access...');
-        
+
         const constraints = {
             video: {
                 width: { ideal: 640 },
@@ -546,47 +618,73 @@ async function startCamera() {
                 facingMode: 'user'
             }
         };
-        
+
         videoStream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElement.srcObject = videoStream;
-        
+
         videoElement.style.display = 'block';
         document.getElementById('video-placeholder').style.display = 'none';
-        
-        document.getElementById('start-camera-btn').disabled = true;
-        document.getElementById('stop-camera-btn').disabled = false;
-        
+
+        // Update button states
+        startBtn.textContent = '📷 Start Camera';
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        stopBtn.textContent = '⏹️ Stop Camera';
+
         updateVideoStatus('Camera active');
-        
+
         isProcessing = true;
         processVideoFrame();
-        
+
     } catch (error) {
         console.error('Error accessing camera:', error);
+
+        // Reset button states on error
+        const startBtn = document.getElementById('start-camera-btn');
+        const stopBtn = document.getElementById('stop-camera-btn');
+
+        startBtn.disabled = false;
+        startBtn.textContent = '📷 Start Camera';
+        stopBtn.disabled = true;
+        stopBtn.textContent = '⏹️ Stop Camera';
+
         updateVideoStatus('Error: ' + error.message);
     }
 }
 
 // Stop camera
 function stopCamera() {
+    // Update button states
+    const startBtn = document.getElementById('start-camera-btn');
+    const stopBtn = document.getElementById('stop-camera-btn');
+
+    stopBtn.disabled = true;
+    stopBtn.textContent = '⏹️ Stopping...';
+    startBtn.disabled = true;
+
+    updateVideoStatus('Stopping camera...');
+
     if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
         videoStream = null;
     }
-    
+
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
     }
-    
+
     isProcessing = false;
-    
+
     videoElement.style.display = 'none';
     document.getElementById('video-placeholder').style.display = 'block';
-    
-    document.getElementById('start-camera-btn').disabled = false;
-    document.getElementById('stop-camera-btn').disabled = true;
-    
+
+    // Update button states
+    startBtn.disabled = false;
+    startBtn.textContent = '📷 Start Camera';
+    stopBtn.disabled = true;
+    stopBtn.textContent = '⏹️ Stop Camera';
+
     updateVideoStatus('Camera stopped');
 }
 
@@ -594,14 +692,23 @@ function stopCamera() {
 function handleVideoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-    
+
+    // Update button states
+    const startBtn = document.getElementById('start-camera-btn');
+    const stopBtn = document.getElementById('stop-camera-btn');
+
+    startBtn.disabled = true;
+    startBtn.textContent = '📷 Start Camera';
+    stopBtn.disabled = false;
+    stopBtn.textContent = '⏹️ Stop Camera';
+
     const url = URL.createObjectURL(file);
     videoElement.src = url;
     videoElement.style.display = 'block';
     document.getElementById('video-placeholder').style.display = 'none';
-    
+
     updateVideoStatus('Video loaded: ' + file.name);
-    
+
     isProcessing = true;
     processVideoFrame();
 }
@@ -680,40 +787,92 @@ async function sendFrameToBackend(base64Data) {
     }
 }
 
-// Draw overlay based on mode
+// Draw overlay with bounding boxes and analytics based on current mode
 function drawOverlay(result) {
     if (!overlayCanvas || !overlayCtx || !videoElement) return;
-    
+
+    // Get video dimensions
     const videoWidth = videoElement.videoWidth || 640;
     const videoHeight = videoElement.videoHeight || 480;
-    
+
+    // Set canvas size to match video
     overlayCanvas.width = videoWidth;
     overlayCanvas.height = videoHeight;
-    
+
+    // Clear previous drawings
     overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-    
+
     if (!result) return;
-    
+
+    // Handle different based on mode
     if (currentMode === 'sleep') {
+        // Sleep detection mode - draw face/eye/mouth landmarks
         drawSleepDetectionOverlay(result);
     } else {
+        // Crowd counting mode - draw person bounding boxes
         drawCrowdOverlay(result);
     }
 }
 
+// Draw overlay for sleep detection mode
 function drawSleepDetectionOverlay(result) {
-    if (!result.face_detected) return;
-    
-    if (result.face_box && result.face_box.length === 4) {
+    if (!result.face_detected) {
+        return;
+    }
+
+    // Draw face bounding box (green)
+    if (result.face_box && result.face_box.length === 4 && result.face_box[2] > 0) {
         const [x1, y1, x2, y2] = result.face_box;
         overlayCtx.strokeStyle = '#00ff00';
         overlayCtx.lineWidth = 2;
         overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label
         overlayCtx.fillStyle = '#00ff00';
         overlayCtx.font = '14px Arial';
         overlayCtx.fillText('Face', x1, y1 - 5);
     }
-    
+
+    // Draw left eye bounding box (red)
+    if (result.left_eye_box && result.left_eye_box.length === 4 && result.left_eye_box[2] > 0) {
+        const [x1, y1, x2, y2] = result.left_eye_box;
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label
+        overlayCtx.fillStyle = '#ff0000';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('L-Eye', x1, y1 - 5);
+    }
+
+    // Draw right eye bounding box (red)
+    if (result.right_eye_box && result.right_eye_box.length === 4 && result.right_eye_box[2] > 0) {
+        const [x1, y1, x2, y2] = result.right_eye_box;
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label
+        overlayCtx.fillStyle = '#ff0000';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('R-Eye', x1, y1 - 5);
+    }
+
+    // Draw mouth bounding box (blue)
+    if (result.mouth_box && result.mouth_box.length === 4 && result.mouth_box[2] > 0) {
+        const [x1, y1, x2, y2] = result.mouth_box;
+        overlayCtx.strokeStyle = '#0000ff';
+        overlayCtx.lineWidth = 2;
+        overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label
+        overlayCtx.fillStyle = '#0000ff';
+        overlayCtx.font = '12px Arial';
+        overlayCtx.fillText('Mouth', x1, y1 - 5);
+    }
+
+    // Draw analytics text
     const analyticsText = [
         `EAR: ${(result.ear || 0).toFixed(3)}`,
         `MAR: ${(result.mar || 0).toFixed(3)}`,
@@ -721,22 +880,77 @@ function drawSleepDetectionOverlay(result) {
         `Yaw: ${(result.yaw || 0).toFixed(1)}°`,
         `Roll: ${(result.roll || 0).toFixed(1)}°`
     ];
-    
+
+    // Draw text background
+    const textX = 10;
+    const textY = 20;
+    const lineHeight = 20;
+    const textWidth = 150;
+    const textHeight = analyticsText.length * lineHeight + 10;
+
     overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    overlayCtx.fillRect(10, 5, 150, 110);
-    
+    overlayCtx.fillRect(textX - 5, textY - 15, textWidth, textHeight);
+
+    // Draw text
     overlayCtx.fillStyle = '#ffffff';
     overlayCtx.font = 'bold 14px Arial';
     analyticsText.forEach((text, index) => {
-        overlayCtx.fillText(text, 15, 20 + index * 20);
+        overlayCtx.fillText(text, textX, textY + index * lineHeight);
     });
+
+    // Draw eye landmarks (red lines)
+    if (result.left_eye && result.left_eye.length > 0) {
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 1;
+        overlayCtx.beginPath();
+        result.left_eye.forEach((point, index) => {
+            if (index === 0) {
+                overlayCtx.moveTo(point[0], point[1]);
+            } else {
+                overlayCtx.lineTo(point[0], point[1]);
+            }
+        });
+        overlayCtx.closePath();
+        overlayCtx.stroke();
+    }
+
+    if (result.right_eye && result.right_eye.length > 0) {
+        overlayCtx.strokeStyle = '#ff0000';
+        overlayCtx.lineWidth = 1;
+        overlayCtx.beginPath();
+        result.right_eye.forEach((point, index) => {
+            if (index === 0) {
+                overlayCtx.moveTo(point[0], point[1]);
+            } else {
+                overlayCtx.lineTo(point[0], point[1]);
+            }
+        });
+        overlayCtx.closePath();
+        overlayCtx.stroke();
+    }
+
+    // Draw nose landmarks (yellow dots)
+    if (result.nose && result.nose.length > 0) {
+        overlayCtx.strokeStyle = '#ffff00';
+        overlayCtx.lineWidth = 1;
+        result.nose.forEach(point => {
+            overlayCtx.beginPath();
+            overlayCtx.arc(point[0], point[1], 3, 0, 2 * Math.PI);
+            overlayCtx.stroke();
+        });
+    }
 }
 
+// Draw overlay for crowd counting mode
 function drawCrowdOverlay(result) {
+    // Get person count
     const count = result.count !== undefined ? result.count : (result.people_count || 0);
+
+    // Draw person bounding boxes
     const boxes = result.boxes || result.detections || [];
-    
+
     boxes.forEach((box, index) => {
+        // box format: [x1, y1, x2, y2] or {x1, y1, x2, y2}
         let x1, y1, x2, y2;
         if (Array.isArray(box)) {
             [x1, y1, x2, y2] = box;
@@ -746,20 +960,28 @@ function drawCrowdOverlay(result) {
             x2 = box.x2 || box.right;
             y2 = box.y2 || box.bottom;
         }
-        
+
+        // Draw green bounding box
         overlayCtx.strokeStyle = '#00ff00';
         overlayCtx.lineWidth = 2;
         overlayCtx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+        // Label
         overlayCtx.fillStyle = '#00ff00';
         overlayCtx.font = '14px Arial';
         overlayCtx.fillText('Person ' + (index + 1), x1, y1 - 5);
     });
-    
+
+    // Draw count overlay
+    const textX = 10;
+    const textY = 20;
+
     overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    overlayCtx.fillRect(10, 5, 120, 30);
+    overlayCtx.fillRect(textX - 5, textY - 15, 180, 40);
+
     overlayCtx.fillStyle = '#ffffff';
     overlayCtx.font = 'bold 16px Arial';
-    overlayCtx.fillText('People: ' + count, 15, 27);
+    overlayCtx.fillText('People: ' + count, textX, textY);
 }
 
 // Update video status

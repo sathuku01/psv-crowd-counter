@@ -164,7 +164,7 @@ func (s *APIService) GetDashboardData() (*models.DashboardData, error) {
 	totalPassengers := 0
 
 	for _, report := range reports {
-		totalPassengers += report.Front + report.Rear
+		totalPassengers += report.PassengerCount
 
 		if _, exists := vehicleMap[report.BusID]; !exists {
 			vehicleMap[report.BusID] = &models.VehicleStatus{
@@ -175,7 +175,7 @@ func (s *APIService) GetDashboardData() (*models.DashboardData, error) {
 
 		// Update with latest report
 		if report.Timestamp.After(vehicleMap[report.BusID].LastUpdated) {
-			vehicleMap[report.BusID].PassengerCount = report.Front + report.Rear
+			vehicleMap[report.BusID].PassengerCount = report.PassengerCount
 			vehicleMap[report.BusID].LastUpdated = report.Timestamp
 		}
 	}

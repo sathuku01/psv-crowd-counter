@@ -37,19 +37,16 @@ type HealthResponse struct {
 
 // APIReport represents a crowd counting report for API responses
 type APIReport struct {
-	ID         string    `json:"id"`
-	BusID      string    `json:"bus_id"`
-	Front      int       `json:"front_count"`
-	Rear       int       `json:"rear_count"`
-	Passengers int       `json:"total_passengers"`
-	Timestamp  time.Time `json:"timestamp"`
+	ID             string    `json:"id"`
+	BusID          string    `json:"bus_id"`
+	PassengerCount int       `json:"passenger_count"`
+	Timestamp      time.Time `json:"timestamp"`
 }
 
 // ReportRequest represents a request to create a report
 type ReportRequest struct {
-	BusID string `json:"bus_id" validate:"required"`
-	Front int    `json:"front_count" validate:"required,min=0"`
-	Rear  int    `json:"rear_count" validate:"required,min=0"`
+	BusID          string `json:"bus_id" validate:"required"`
+	PassengerCount int    `json:"passenger_count" validate:"required,min=0"`
 }
 
 // ReportFilter represents filters for querying reports

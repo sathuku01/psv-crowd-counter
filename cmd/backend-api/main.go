@@ -12,8 +12,8 @@ import (
 
 	"psv-crowd-counter/internal/api/config"
 	"psv-crowd-counter/internal/api/router"
-	mockcam "psv-crowd-counter/internal/camera/mock"
-	mockdet "psv-crowd-counter/internal/detector/mock"
+	"psv-crowd-counter/internal/camera"
+	"psv-crowd-counter/internal/detector"
 	"psv-crowd-counter/internal/service"
 	"psv-crowd-counter/internal/storage/jsonstore"
 )
@@ -37,26 +37,29 @@ func main() {
 	reportsPath := fmt.Sprintf("%s/reports.json", dataDir)
 	store := jsonstore.New(reportsPath)
 
-	// Initialize camera (mock for now)
-	camera := mockcam.NewMockCamera(1 * time.Second)
+	// Create detections channel for websocket
+	detections := make(chan detector.Result, 10)
 
-	// Initialize detector (mock for now)
-	detector := mockdet.NewMockDetector()
+	// Initialize camera with real webcam processing
+	realCamera := camera.NewRealCamera(0, 1*time.Second)
+
+	// Initialize detector with real crowd detection
+	realDetector := detector.NewRealDetector()
 
 	// Initialize processor
 	busID := os.Getenv("BUS_ID")
 	if busID == "" {
 		busID = "BUS-001"
 	}
-	reportInterval := 1 * time.Minute
-	processor := service.NewProcessor(camera, detector, store, busID, reportInterval)
+	reportInterval := 10 * time.Second
+	processor := service.NewProcessor(realCamera, realDetector, store, busID, reportInterval, detections)
 
 	// Start processor in background
 	processor.Start()
 	log.Printf("Processor started for bus %s", busID)
 
 	// Initialize router with all routes and middleware
-	r := router.NewRouter(cfg, store, processor)
+	r := router.NewRouter(cfg, store, processor, detections)
 	handler := r.SetupRoutes()
 
 	// Create HTTP server with timeouts
@@ -97,7 +100,7 @@ func main() {
 	log.Println("Shutting down server...")
 
 	// Create a deadline for server shutdown
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	// Attempt graceful shutdown

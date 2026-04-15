@@ -4,12 +4,10 @@ import "time"
 
 // Report represents a crowd count report from the backend
 type Report struct {
-	ID         string    `json:"id"`
-	BusID      string    `json:"bus_id"`
-	Front      int       `json:"front"`
-	Rear       int       `json:"rear"`
-	Passengers int       `json:"total_passengers"`
-	Timestamp  time.Time `json:"timestamp"`
+	ID             string    `json:"id"`
+	BusID          string    `json:"bus_id"`
+	PassengerCount int       `json:"passenger_count"`
+	Timestamp      time.Time `json:"timestamp"`
 }
 
 // VehicleStatus represents the current status of a vehicle
@@ -40,8 +38,6 @@ type AnalyticsData struct {
 	TotalReports       int         `json:"total_reports"`
 	AveragePassengers  float64     `json:"average_passengers"`
 	PeakHour           int         `json:"peak_hour"`
-	FrontDoorCount     int         `json:"front_door_count"`
-	RearDoorCount      int         `json:"rear_door_count"`
 	HourlyDistribution map[int]int `json:"hourly_distribution"`
 	MaxHourlyCount     int         `json:"max_hourly_count"`
 	BusStats           []BusStat   `json:"bus_stats"`

@@ -1,6 +1,6 @@
 /**
  * TensorFlow.js Client-Side Detection
- * This runs YOLOv8 model directly in the browser for real-time person detection
+ * This runs COCO-SSD model for high-accuracy person detection
  */
 
 class ClientSideDetector {
@@ -8,55 +8,77 @@ class ClientSideDetector {
         this.model = null;
         this.isLoaded = false;
         this.isProcessing = false;
+
+        // Temporal smoothing for stable bounding boxes
+        this.previousDetections = [];
+        this.smoothingFactor = 0.7; // Higher = more stable but slower response
+        this.maxHistoryFrames = 5; // Frames to keep for smoothing
     }
 
-    // Load the YOLOv8 model (using a pre-converted TensorFlow.js model)
+    // Load the COCO-SSD model for person detection
     async loadModel(modelPath = null) {
-        console.log('Loading TensorFlow.js model...');
+        console.log('Loading COCO-SSD model...');
         
-        // Import TensorFlow.js
-        if (!window.tf) {
-            // Load TensorFlow.js from CDN
-            await this.loadTFJS();
+        // Load TensorFlow.js and COCO-SSD from CDN
+        await this.loadTFJS();
+        
+        // Try loading COCO-SSD model (specialized for person detection)
+        try {
+            // COCO-SSD is optimized for person detection with the 'person' class
+            this.model = await cocoSsd.load({
+                base: 'lite_mobilenet_v2' // Faster and lighter for browser
+            });
+            this.isLoaded = true;
+            console.log('COCO-SSD model loaded successfully');
+            return true;
+        } catch (error) {
+            console.warn('Failed to load COCO-SSD model:', error.message);
         }
         
-        // Define model paths to try
-        const modelPaths = modelPath ? [modelPath] : [
-            '/static/models/yolov8n_webmodel/model.json',
-            'https://storage.googleapis.com/tfjs-models/savedmodel/retinanet/model.json'
-        ];
-        
-        for (const path of modelPaths) {
-            try {
-                console.log('Trying model path:', path);
-                this.model = await tf.loadGraphModel(path);
-                this.isLoaded = true;
-                console.log('Model loaded successfully from:', path);
-                return true;
-            } catch (error) {
-                console.warn('Failed to load model from', path, ':', error.message);
-            }
-        }
-        
-        // If no model loaded, use fallback simulation mode
+        // Fallback to simulation mode
         console.warn('No model available, using simulation mode');
         this.isLoaded = false;
         return false;
     }
 
-    // Load TensorFlow.js library from CDN
+    // Load TensorFlow.js library and COCO-SSD from CDN
     async loadTFJS() {
         return new Promise((resolve, reject) => {
-            if (window.tf) {
+            if (window.tf && window.cocoSsd) {
                 resolve();
                 return;
             }
-            
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
+
+            let loadedCount = 0;
+            const totalScripts = 2;
+            const checkLoaded = () => {
+                loadedCount++;
+                if (loadedCount === totalScripts) {
+                    resolve();
+                }
+            };
+
+            // Load TensorFlow.js
+            if (!window.tf) {
+                const tfScript = document.createElement('script');
+                tfScript.src = 'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js';
+                tfScript.onload = checkLoaded;
+                tfScript.onerror = reject;
+                document.head.appendChild(tfScript);
+            } else {
+                loadedCount++;
+            }
+
+            // Load COCO-SSD
+            if (!window.cocoSsd) {
+                const cocoScript = document.createElement('script');
+                cocoScript.src = 'https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js';
+                cocoScript.onload = checkLoaded;
+                cocoScript.onerror = reject;
+                document.head.appendChild(cocoScript);
+            } else {
+                loadedCount++;
+            }
         });
     }
 
@@ -74,31 +96,12 @@ class ClientSideDetector {
         this.isProcessing = true;
 
         try {
-            // Convert image to tensor
-            const tensor = tf.browser.fromPixels(imageElement);
+            // Run inference with COCO-SSD model
+            const predictions = await this.model.detect(imageElement);
             
-            // Resize to model input size (640x640 for YOLOv8)
-            const resized = tf.image.resizeBilinear(tensor, [640, 640]);
+            // Process predictions to get person detections only
+            const result = this.processOutput(predictions, imageElement.width, imageElement.height);
             
-            // Normalize to 0-1 range
-            const normalized = resized.div(255.0);
-            
-            // Add batch dimension
-            const batched = normalized.expandDims(0);
-            
-            // Run inference
-            const output = this.model.predict(batched);
-            
-            // Process output to get person detections
-            const result = this.processOutput(output, imageElement.width, imageElement.height);
-            
-            // Clean up tensors
-            tensor.dispose();
-            resized.dispose();
-            normalized.dispose();
-            batched.dispose();
-            output.forEach(t => t.dispose());
-
             this.isProcessing = false;
             return result;
         } catch (error) {
@@ -135,65 +138,51 @@ class ClientSideDetector {
         };
     }
 
-    // Process YOLOv8 output to extract person detections
-    processOutput(output, imageWidth, imageHeight) {
-        // This is a simplified version - real YOLOv8 output processing is more complex
-        // For now, we'll create a placeholder that shows the concept works
-        
+    // Process COCO-SSD output to extract person detections
+    processOutput(predictions, imageWidth, imageHeight) {
         const boxes = [];
-        const rawOutput = output[0].dataSync();
         
-        // YOLOv8 output format: [batch, num_boxes, num_classes + 4]
-        // For YOLOv8n with COCO: [1, 8400, 84] (84 = 80 classes + 4 bbox)
-        // Person class is index 0
+        // COCO-SSD returns predictions with bbox, class, and score
+        // Class 'person' is typically class 1 in COCO dataset
+        const confidenceThreshold = 0.6;
         
-        const numBoxes = 8400;
-        const numClasses = 80;
-        
-        for (let i = 0; i < numBoxes; i++) {
-            // Get the class scores (starting at index 4)
-            let maxScore = 0;
-            let maxClass = -1;
-            
-            for (let c = 0; c < numClasses; c++) {
-                const score = rawOutput[i * (numClasses + 4) + 4 + c];
-                if (score > maxScore) {
-                    maxScore = score;
-                    maxClass = c;
-                }
+        for (const pred of predictions) {
+            // Only keep 'person' class with high confidence
+            if (pred.class !== 'person' || pred.score < confidenceThreshold) {
+                continue;
             }
             
-            // Only care about person (class 0) with sufficient confidence
-            if (maxClass === 0 && maxScore > 0.25) {
-                // Get bbox coordinates
-                const x = rawOutput[i * (numClasses + 4)];
-                const y = rawOutput[i * (numClasses + 4) + 1];
-                const w = rawOutput[i * (numClasses + 4) + 2];
-                const h = rawOutput[i * (numClasses + 4) + 3];
-                
-                // Convert from center format to corner format
-                const x1 = (x - w / 2) * (imageWidth / 640);
-                const y1 = (y - h / 2) * (imageHeight / 640);
-                const x2 = (x + w / 2) * (imageWidth / 640);
-                const y2 = (y + h / 2) * (imageHeight / 640);
-                
-                boxes.push({
-                    x1: Math.max(0, Math.min(imageWidth, x1)),
-                    y1: Math.max(0, Math.min(imageHeight, y1)),
-                    x2: Math.max(0, Math.min(imageWidth, x2)),
-                    y2: Math.max(0, Math.min(imageHeight, y2)),
-                    score: maxScore
-                });
-            }
+            // Extract bounding box coordinates (normalized 0-1)
+            const [x, y, w, h] = pred.bbox;
+            
+            // Convert to pixel coordinates
+            const x1 = x * imageWidth;
+            const y1 = y * imageHeight;
+            const x2 = (x + w) * imageWidth;
+            const y2 = (y + h) * imageHeight;
+            
+            boxes.push({
+                x1: Math.max(0, x1),
+                y1: Math.max(0, y1),
+                x2: Math.min(imageWidth, x2),
+                y2: Math.min(imageHeight, y2),
+                score: pred.score
+            });
         }
 
-        // Apply non-maximum suppression
-        const finalBoxes = this.nms(boxes, 0.45);
+        // Apply NMS to remove overlapping boxes
+        const finalBoxes = this.nms(boxes, 0.3);
         
+        // Limit to maximum 10 detections
+        const filteredBoxes = finalBoxes.slice(0, 10);
+        
+        // Apply temporal smoothing for stability
+        const smoothedBoxes = this.smoothDetections(filteredBoxes);
+
         return {
-            count: finalBoxes.length,
-            boxes: finalBoxes,
-            detections: finalBoxes
+            count: smoothedBoxes.length,
+            boxes: smoothedBoxes,
+            detections: smoothedBoxes
         };
     }
 
@@ -240,6 +229,58 @@ class ClientSideDetector {
         const union = area1 + area2 - intersection;
 
         return intersection / union;
+    }
+
+    // Apply temporal smoothing to detections for stability
+    smoothDetections(currentDetections) {
+        // Add current detections to history
+        this.previousDetections.push(currentDetections);
+        if (this.previousDetections.length > this.maxHistoryFrames) {
+            this.previousDetections.shift();
+        }
+
+        if (this.previousDetections.length < 2) {
+            return currentDetections; // Not enough history for smoothing
+        }
+
+        // Smooth each detection by averaging with previous frames
+        const smoothedDetections = currentDetections.map(currentBox => {
+            let smoothedBox = { ...currentBox };
+
+            // Find best matching box from previous frames
+            for (let frame of this.previousDetections.slice(0, -1)) {
+                const match = this.findBestMatchingBox(currentBox, frame);
+                if (match) {
+                    // Apply exponential moving average
+                    smoothedBox.x1 = smoothedBox.x1 * (1 - this.smoothingFactor) + match.x1 * this.smoothingFactor;
+                    smoothedBox.y1 = smoothedBox.y1 * (1 - this.smoothingFactor) + match.y1 * this.smoothingFactor;
+                    smoothedBox.x2 = smoothedBox.x2 * (1 - this.smoothingFactor) + match.x2 * this.smoothingFactor;
+                    smoothedBox.y2 = smoothedBox.y2 * (1 - this.smoothingFactor) + match.y2 * this.smoothingFactor;
+                    smoothedBox.score = Math.max(smoothedBox.score, match.score); // Keep highest confidence
+                    break; // Use first good match
+                }
+            }
+
+            return smoothedBox;
+        });
+
+        return smoothedDetections;
+    }
+
+    // Find best matching bounding box from previous frame using IoU
+    findBestMatchingBox(currentBox, previousDetections) {
+        let bestMatch = null;
+        let bestIoU = 0;
+
+        for (let prevBox of previousDetections) {
+            const iou = this.calculateIOU(currentBox, prevBox);
+            if (iou > 0.3 && iou > bestIoU) { // IoU threshold for matching
+                bestMatch = prevBox;
+                bestIoU = iou;
+            }
+        }
+
+        return bestMatch;
     }
 
     // Check if model is loaded

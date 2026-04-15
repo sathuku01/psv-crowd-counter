@@ -6,7 +6,7 @@ import (
 	"psv-crowd-counter/internal/api/config"
 	"psv-crowd-counter/internal/api/handlers"
 	"psv-crowd-counter/internal/api/middleware"
-
+	"psv-crowd-counter/internal/detector"
 	"psv-crowd-counter/internal/service"
 	"psv-crowd-counter/internal/storage"
 )
@@ -19,8 +19,8 @@ type Router struct {
 }
 
 // NewRouter creates a new Router instance
-func NewRouter(cfg *config.Config, store storage.Store, processor *service.Processor) *Router {
-	handler := handlers.NewHandler(store, processor)
+func NewRouter(cfg *config.Config, store storage.Store, processor *service.Processor, detections chan detector.Result) *Router {
+	handler := handlers.NewHandler(store, processor, detections)
 	limiter := middleware.NewRateLimiter(cfg.Security.RateLimit, cfg.Security.RateLimitWindow)
 
 	return &Router{
@@ -42,6 +42,8 @@ func (rt *Router) SetupRoutes() http.Handler {
 	mux.HandleFunc("/api/v1/analytics", rt.handler.GetAnalytics)
 
 	mux.HandleFunc("/api/v1/processor/status", rt.handler.GetProcessorStatus)
+	mux.HandleFunc("/ws/detections", rt.handler.LiveDetections)
+	mux.HandleFunc("/ws/detect", rt.handler.LiveDetections) // Frontend path
 
 	// Legacy routes for backward compatibility
 	mux.HandleFunc("/health", rt.handler.Health)

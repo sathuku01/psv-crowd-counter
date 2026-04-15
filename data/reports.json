@@ -1,0 +1,122 @@
+[
+  {
+    "timestamp": "2026-04-07T23:30:09.643190565+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-07T23:31:09.643190593+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-08T05:35:12.628086917+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-08T06:14:22.811469169+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-08T06:14:25.81137587+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-08T06:21:02.913296942+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:46:19.516671917+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:47:36.514835814+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:47:38.514386844+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:48:04.408732869+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:48:06.514137825+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:49:48.573332164+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:50:53.833982356+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 1,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:53:05.195623752+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:55:04.066697549+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:55:12.5133685+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:55:15.514413656+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:57:17.513423401+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T21:58:42.513832311+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 0,
+    "speed_kph": 0
+  },
+  {
+    "timestamp": "2026-04-12T22:20:17.457737278+03:00",
+    "bus_id": "BUS-001",
+    "passenger_count": 1,
+    "speed_kph": 0
+  }
+]

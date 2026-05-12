@@ -16,6 +16,9 @@ import (
 	"psv-crowd-counter/internal/detector"
 	"psv-crowd-counter/internal/service"
 	"psv-crowd-counter/internal/storage/jsonstore"
+
+	mock "psv-crowd-counter/internal/camera/mock"
+	mockdet "psv-crowd-counter/internal/detector/mock"
 )
 
 func main() {
@@ -40,11 +43,23 @@ func main() {
 	// Create detections channel for websocket
 	detections := make(chan detector.Result, 10)
 
-	// Initialize camera with real webcam processing
-	realCamera := camera.NewRealCamera(0, 1*time.Second)
+	// Check if we should use mock implementations (for cloud deployment)
+	useMock := os.Getenv("USE_MOCK_IMPLEMENTATIONS") == "true"
 
-	// Initialize detector with real crowd detection
-	realDetector := detector.NewRealDetector()
+	var cameraImpl camera.Camera
+	var detectorImpl detector.Detector
+
+	if useMock {
+		log.Println("Using mock implementations for cloud deployment")
+		cameraImpl = mock.NewMockCamera(1 * time.Second)
+		detectorImpl = mockdet.NewMockDetector()
+	} else {
+		// Initialize camera with real webcam processing
+		cameraImpl = camera.NewRealCamera(0, 1*time.Second)
+
+		// Initialize detector with real crowd detection
+		detectorImpl = detector.NewRealDetector()
+	}
 
 	// Initialize processor
 	busID := os.Getenv("BUS_ID")
@@ -52,7 +67,7 @@ func main() {
 		busID = "BUS-001"
 	}
 	reportInterval := 10 * time.Second
-	processor := service.NewProcessor(realCamera, realDetector, store, busID, reportInterval, detections)
+	processor := service.NewProcessor(cameraImpl, detectorImpl, store, busID, reportInterval, detections)
 
 	// Start processor in background
 	processor.Start()

@@ -1,0 +1,32 @@
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the frontend
+RUN go build -o frontend-server ./frontend/cmd
+
+# Final stage
+FROM alpine:latest
+
+# Install CA certificates
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the binary from builder
+COPY --from=builder /app/frontend-server .
+
+# Expose port
+EXPOSE 3000
+
+# Command to run
+CMD ["./frontend-server"]

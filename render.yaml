@@ -4,6 +4,7 @@ services:
     env: docker
     plan: free
     dockerfilePath: Dockerfile.backend
+    port: 8080
     envVars:
       - key: DATA_DIR
         value: /tmp/data
@@ -20,7 +21,4 @@ services:
       - key: FRONTEND_PORT
         value: "3000"
       - key: BACKEND_API_URL
-        fromService:
-          name: psv-backend
-          property: host
-          type: web
+        value: http://psv-backend:8080

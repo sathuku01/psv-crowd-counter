@@ -27,7 +27,7 @@ RUN go build -o backend-api ./cmd/backend-api
 FROM alpine:latest
 
 # Install CA certificates and OpenCV runtime
-RUN apk --no-cache add ca-certificates libstdc++
+RUN apk --no-cache add ca-certificates libstdc++ opencv-dev
 
 WORKDIR /root/
 

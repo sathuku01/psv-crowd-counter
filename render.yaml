@@ -19,12 +19,12 @@ services:
         value: "false"
       - key: USE_MOCK_IMPLEMENTATIONS
         value: "true"
-    healthCheck:
+    health_check:
       path: /api/v1/health
       interval: 30s
       timeout: 10s
-      restartPolicy:
-        maxRetries: 3
+      restart_policy:
+        max_retries: 3
   - type: web
     name: psv-frontend
     env: docker
@@ -41,9 +41,9 @@ services:
         value: http://localhost:5000
       - key: CROWD_DETECT_URL
         value: http://localhost:8081
-    healthCheck:
+    health_check:
       path: /api/health
       interval: 30s
       timeout: 10s
-      restartPolicy:
-        maxRetries: 3
+      restart_policy:
+        max_retries: 3

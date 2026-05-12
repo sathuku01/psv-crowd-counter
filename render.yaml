@@ -6,25 +6,11 @@ services:
     dockerfilePath: Dockerfile.backend
     envVars:
       - key: DATA_DIR
-        value: /var/data
+        value: /tmp/data
       - key: BUS_ID
         value: BUS-001
-      - key: REPORT_INTERVAL
-        value: "10s"
-      - key: BACKEND_PORT
-        value: "8080"
-      - key: API_KEY
-        generateValue: true
-      - key: ENABLE_HTTPS
-        value: "false"
       - key: USE_MOCK_IMPLEMENTATIONS
         value: "true"
-    health_check:
-      path: /api/v1/health
-      interval: 30s
-      timeout: 10s
-      restart_policy:
-        max_retries: 3
   - type: web
     name: psv-frontend
     env: docker
@@ -37,13 +23,3 @@ services:
         fromService:
           name: psv-backend
           property: host
-      - key: MEDIAPIPE_URL
-        value: http://localhost:5000
-      - key: CROWD_DETECT_URL
-        value: http://localhost:8081
-    health_check:
-      path: /api/health
-      interval: 30s
-      timeout: 10s
-      restart_policy:
-        max_retries: 3

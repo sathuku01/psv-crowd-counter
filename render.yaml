@@ -10,9 +10,9 @@ services:
       - key: BUS_ID
         value: BUS-001
       - key: REPORT_INTERVAL
-        value: 10s
+        value: "10s"
       - key: BACKEND_PORT
-        value: 8080
+        value: "8080"
       - key: API_KEY
         generateValue: true
       - key: ENABLE_HTTPS
@@ -32,7 +32,7 @@ services:
     dockerfilePath: Dockerfile.frontend
     envVars:
       - key: FRONTEND_PORT
-        value: 3000
+        value: "3000"
       - key: BACKEND_API_URL
         fromService:
           name: psv-backend

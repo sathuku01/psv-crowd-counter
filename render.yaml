@@ -20,4 +20,4 @@ services:
       - key: FRONTEND_PORT
         value: "3000"
       - key: BACKEND_API_URL
-        value: https://psv-backend.onrender.com
+        value: https://psv-backend-c5xz.onrender.com

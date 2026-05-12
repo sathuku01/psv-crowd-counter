@@ -24,6 +24,9 @@ WORKDIR /root/
 
 # Copy the binary from builder
 COPY --from=builder /app/frontend-server .
+# Copy static and template directories from the builder stage
+COPY --from=builder /app/frontend/static ./frontend/static
+COPY --from=builder /app/frontend/internal/templates ./frontend/internal/templates
 
 # Expose port
 EXPOSE 3000

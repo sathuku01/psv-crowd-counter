@@ -8,10 +8,14 @@ import (
 	"image"
 	"image/color"
 	"io"
+	"log"
 	"math"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
+
+	"psv-crowd-counter/internal/api/config"
 
 	"gocv.io/x/gocv"
 )
@@ -266,9 +270,18 @@ func runWithFaceDetection() {
 	frame := gocv.NewMat()
 	defer frame.Close()
 
+
+	root, err := config.FindModuleRoot()
+	if err != nil {
+		log.Fatal("go.mod paht not found")
+	}
+
+	deploypath := filepath.Join(root, "internal", "core", "models", "deploy.prototxt")
+	caffemoedelpath :=  filepath.Join(root, "internal", "core", "models", "res10_300x300_ssd_iter_140000.caffemodel")
+
 	faceNet := gocv.ReadNetFromCaffe(
-		"/home/sathuku/psv-crowd-counter/internal/core/models/deploy.prototxt",
-		"/home/sathuku/psv-crowd-counter/internal/core/models/res10_300x300_ssd_iter_140000.caffemodel",
+		deploypath,
+		caffemoedelpath,
 	)
 	if faceNet.Empty() {
 		fmt.Println("Failed to load face detector")

@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"image"
 	"log"
 	"net/http"
+	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -229,6 +233,12 @@ func (h *Handler) GetProcessorStatus(w http.ResponseWriter, r *http.Request) {
 
 // LiveDetections handles WebSocket connections for real-time detection results
 func (h *Handler) LiveDetections(w http.ResponseWriter, r *http.Request) {
+	// Get mode from query parameter (sleep or crowd)
+	mode := r.URL.Query().Get("mode")
+	if mode == "" {
+		mode = "sleep"
+	}
+
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		CompressionMode: websocket.CompressionContextTakeover,
 	})
@@ -238,7 +248,7 @@ func (h *Handler) LiveDetections(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close(websocket.StatusNormalClosure, "Connection closed")
 
-	log.Printf("WebSocket connected: %s", r.URL.Query().Get("mode"))
+	log.Printf("WebSocket connected: mode=%s", mode)
 
 	for {
 		// Read message from client (contains base64 image)
@@ -262,7 +272,7 @@ func (h *Handler) LiveDetections(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Process detection
-		result := h.processImageForDetection(imageB64)
+		result := h.processImageForDetection(imageB64, mode)
 		if result == nil {
 			continue
 		}
@@ -276,7 +286,8 @@ func (h *Handler) LiveDetections(w http.ResponseWriter, r *http.Request) {
 }
 
 // processImageForDetection processes a base64 image and returns detection results
-func (h *Handler) processImageForDetection(imageB64 string) map[string]interface{} {
+// mode parameter determines detection type: "sleep" for face/landmark detection, "crowd" for people detection
+func (h *Handler) processImageForDetection(imageB64 string, mode string) map[string]interface{} {
 	// Decode base64 image
 	imgData, err := base64.StdEncoding.DecodeString(imageB64)
 	if err != nil {
@@ -300,37 +311,406 @@ func (h *Handler) processImageForDetection(imageB64 string) map[string]interface
 	}
 	defer img.Close()
 
-	// Create HOG descriptor for person detection
-	hog := gocv.NewHOGDescriptor()
-	defer hog.Close()
-	hog.SetSVMDetector(gocv.HOGDefaultPeopleDetector())
+	if mode == "sleep" {
+		// For sleep mode, delegate to MediaPipe server for facial landmark detection
+		return h.callMediaPipeForDetection(imgData)
+	} else if mode == "crowd" {
+		// For crowd mode, use YOLOv8 ONNX model for people detection
+		return h.processImageForCrowdDetection(img)
+	} else {
+		// Default to crowd detection if mode is unknown
+		return h.processImageForCrowdDetection(img)
+	}
+}
 
-	// Detect people
-	rects := hog.DetectMultiScale(img)
+// callMediaPipeForDetection delegates to the MediaPipe server for facial landmark detection
+func (h *Handler) callMediaPipeForDetection(imgData []byte) map[string]interface{} {
+	// Get MediaPipe URL from environment or use default
+	mediaPipeURL := os.Getenv("MEDIAPIPE_URL")
+	if mediaPipeURL == "" {
+		mediaPipeURL = "http://localhost:5000" // Default MediaPipe URL
+	}
+
+	// Encode image to base64 for sending to MediaPipe server
+	imageB64 := base64.StdEncoding.EncodeToString(imgData)
+
+	// Create HTTP request to MediaPipe server
+	payload := map[string]string{
+		"image": imageB64,
+	}
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		log.Printf("Failed to marshal payload for MediaPipe: %v", err)
+		return nil
+	}
+
+	resp, err := http.Post(mediaPipeURL+"/detect", "application/json", bytes.NewReader(payloadBytes))
+	if err != nil {
+		log.Printf("Failed to call MediaPipe server: %v", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("MediaPipe server returned non-OK status: %v", resp.StatusCode)
+		return nil
+	}
+
+	// Parse response from MediaPipe server
+	var result map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		log.Printf("Failed to decode MediaPipe response: %v", err)
+		return nil
+	}
+
+	// Convert MediaPipe response to expected format
+	// MediaPipe returns: face_detected, ear, mar, pitch, yaw, roll, face_box, left_eye_box, right_eye_box, mouth_box
+	// We need to convert to: count, boxes (with type: "face" or "person" etc.)
+
+	boxes := make([]map[string]interface{}, 0)
+
+	// Add face box if face detected
+	if faceDetected, ok := result["face_detected"].(bool); ok && faceDetected {
+		if faceBox, ok := result["face_box"].([]interface{}); ok && len(faceBox) == 4 {
+			boxes = append(boxes, map[string]interface{}{
+				"x1":   int(faceBox[0].(float64)),
+				"y1":   int(faceBox[1].(float64)),
+				"x2":   int(faceBox[2].(float64)),
+				"y2":   int(faceBox[3].(float64)),
+				"type": "face",
+			})
+		}
+
+		// Add left eye box
+		if leftEyeBox, ok := result["left_eye_box"].([]interface{}); ok && len(leftEyeBox) == 4 {
+			boxes = append(boxes, map[string]interface{}{
+				"x1":   int(leftEyeBox[0].(float64)),
+				"y1":   int(leftEyeBox[1].(float64)),
+				"x2":   int(leftEyeBox[2].(float64)),
+				"y2":   int(leftEyeBox[3].(float64)),
+				"type": "left_eye",
+			})
+		}
+
+		// Add right eye box
+		if rightEyeBox, ok := result["right_eye_box"].([]interface{}); ok && len(rightEyeBox) == 4 {
+			boxes = append(boxes, map[string]interface{}{
+				"x1":   int(rightEyeBox[0].(float64)),
+				"y1":   int(rightEyeBox[1].(float64)),
+				"x2":   int(rightEyeBox[2].(float64)),
+				"y2":   int(rightEyeBox[3].(float64)),
+				"type": "right_eye",
+			})
+		}
+
+		// Add mouth box
+		if mouthBox, ok := result["mouth_box"].([]interface{}); ok && len(mouthBox) == 4 {
+			boxes = append(boxes, map[string]interface{}{
+				"x1":   int(mouthBox[0].(float64)),
+				"y1":   int(mouthBox[1].(float64)),
+				"x2":   int(mouthBox[2].(float64)),
+				"y2":   int(mouthBox[3].(float64)),
+				"type": "mouth",
+			})
+		}
+	}
+
+	resultMap := map[string]interface{}{
+		"count": len(boxes),
+		"boxes": boxes,
+		// Also include the raw metrics for potential use by frontend
+		"ear":           result["ear"],
+		"mar":           result["mar"],
+		"pitch":         result["pitch"],
+		"yaw":           result["yaw"],
+		"roll":          result["roll"],
+		"face_detected": result["face_detected"],
+	}
+
+	return resultMap
+}
+
+// processImageForCrowdDetection processes an image using YOLOv8 ONNX model for people detection
+func (h *Handler) processImageForCrowdDetection(img gocv.Mat) map[string]interface{} {
+	// YOLOv8 ONNX path
+	modelPath := "/home/sathuku/psv-crowd-counter/internal/core/models/yolov8n.onnx"
+
+	// Load YOLOv8 ONNX model
+	net := gocv.ReadNet(modelPath, "")
+	if net.Empty() {
+		log.Printf("Failed to load YOLOv8 ONNX model: %v", modelPath)
+		return nil
+	}
+	defer net.Close()
+
+	// Set preferable backend and target
+	net.SetPreferableBackend(gocv.NetBackendDefault)
+	net.SetPreferableTarget(gocv.NetTargetCPU)
+
+	// Get image dimensions
+	width := img.Cols()
+	height := img.Rows()
+	inputSize := 640               // YOLOv8 input size
+	confThreshold := float32(0.25) // Confidence threshold
+	nmsThreshold := float32(0.45)  // NMS threshold
+
+	// Prepare input blob
+	blob := gocv.BlobFromImage(
+		img,
+		1.0/255.0,
+		image.Pt(inputSize, inputSize),
+		gocv.NewScalar(0, 0, 0, 0),
+		true,  // swapRB (BGR to RGB)
+		false, // crop
+	)
+	defer blob.Close()
+
+	net.SetInput(blob, "")
+	output := net.Forward("")
+	defer output.Close()
+
+	// Get output data
+	data, err := output.DataPtrFloat32()
+	if err != nil {
+		log.Printf("Error getting data pointer: %v", err)
+		return nil
+	}
+
+	// Get output shape
+	size := output.Size()
+	if len(size) == 0 {
+		log.Printf("Invalid output shape")
+		return nil
+	}
+
+	// YOLOv8 output format handling
+	var detections []image.Rectangle
+
+	if len(size) == 3 {
+		// Standard YOLOv8 output: [1, num_classes+4, num_predictions]
+		// where num_classes = 80 for COCO, +4 for bbox coordinates
+		numPredictions := size[2] // Usually 8400
+		numChannels := size[1]    // Usually 84 (4 bbox + 80 classes)
+
+		// Calculate scaling factors
+		scaleX := float32(width) / float32(inputSize)
+		scaleY := float32(height) / float32(inputSize)
+
+		// For each prediction
+		for i := 0; i < numPredictions; i++ {
+			// Find the best class score
+			bestClass := -1
+			bestScore := float32(0)
+
+			// Class scores start at index 4 (after bbox coordinates)
+			for j := 4; j < numChannels; j++ {
+				// Access: data[channel * numPredictions + prediction]
+				idx := j*numPredictions + i
+				if idx >= len(data) {
+					continue
+				}
+				score := data[idx]
+				if score > bestScore {
+					bestScore = score
+					bestClass = j - 4
+				}
+			}
+
+			// Check if it's a person (class 0) with sufficient confidence
+			if bestClass == 0 && bestScore > confThreshold {
+				// Get bbox coordinates
+				cxIdx := 0*numPredictions + i
+				cyIdx := 1*numPredictions + i
+				wIdx := 2*numPredictions + i
+				hIdx := 3*numPredictions + i
+
+				if cxIdx >= len(data) || cyIdx >= len(data) || wIdx >= len(data) || hIdx >= len(data) {
+					continue
+				}
+
+				cx := data[cxIdx]
+				cy := data[cyIdx]
+				w := data[wIdx]
+				h := data[hIdx]
+
+				// Convert to pixel coordinates
+				left := int((cx - w/2) * scaleX)
+				top := int((cy - h/2) * scaleY)
+				right := int((cx + w/2) * scaleX)
+				bottom := int((cy + h/2) * scaleY)
+
+				// Clamp to image bounds
+				left = max(0, min(left, width))
+				top = max(0, min(top, height))
+				right = max(0, min(right, width))
+				bottom = max(0, min(bottom, height))
+
+				// Filter out invalid boxes
+				if right > left && bottom > top {
+					detections = append(detections, image.Rect(left, top, right, bottom))
+				}
+			}
+		}
+	} else {
+		// Alternative format: [1, num_predictions, num_channels]
+		numPredictions := size[1]
+		numChannels := size[2]
+
+		if numPredictions == 0 || numChannels == 0 {
+			log.Printf("Invalid output dimensions")
+			return nil
+		}
+
+		scaleX := float32(width) / float32(inputSize)
+		scaleY := float32(height) / float32(inputSize)
+
+		for i := 0; i < numPredictions; i++ {
+			baseIdx := i * numChannels
+			if baseIdx+numChannels > len(data) {
+				continue
+			}
+
+			// Get bbox coordinates
+			cx := data[baseIdx]
+			cy := data[baseIdx+1]
+			w := data[baseIdx+2]
+			h := data[baseIdx+3]
+
+			// Find best class
+			bestClass := -1
+			bestScore := float32(0)
+
+			for j := 4; j < numChannels; j++ {
+				score := data[baseIdx+j]
+				if score > bestScore {
+					bestScore = score
+					bestClass = j - 4
+				}
+			}
+
+			if bestClass == 0 && bestScore > confThreshold {
+				left := int((cx - w/2) * scaleX)
+				top := int((cy - h/2) * scaleY)
+				right := int((cx + w/2) * scaleX)
+				bottom := int((cy + h/2) * scaleY)
+
+				left = max(0, min(left, width))
+				top = max(0, min(top, height))
+				right = max(0, min(right, width))
+				bottom = max(0, min(bottom, height))
+
+				if right > left && bottom > top {
+					detections = append(detections, image.Rect(left, top, right, bottom))
+				}
+			}
+		}
+	}
+
+	// Apply Non-Maximum Suppression
+	finalDetections := nms(detections, nmsThreshold)
 
 	// Convert to boxes format
-	boxes := make([]map[string]interface{}, len(rects))
-	for i, rect := range rects {
+	boxes := make([]map[string]interface{}, len(finalDetections))
+	for i, det := range finalDetections {
 		boxes[i] = map[string]interface{}{
-			"x1":   rect.Min.X,
-			"y1":   rect.Min.Y,
-			"x2":   rect.Max.X,
-			"y2":   rect.Max.Y,
+			"x1":   det.Min.X,
+			"y1":   det.Min.Y,
+			"x2":   det.Max.X,
+			"y2":   det.Max.Y,
 			"type": "person",
 		}
 	}
 
 	result := map[string]interface{}{
-		"count": len(rects),
+		"count": len(finalDetections),
 		"boxes": boxes,
 	}
 
-	log.Printf("Detection result: %d people found", len(rects))
+	log.Printf("Detection result: %d people found", len(finalDetections))
 
 	return result
 }
 
 // Helper functions
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// Non-Maximum Suppression
+func nms(detections []image.Rectangle, iouThreshold float32) []image.Rectangle {
+	if len(detections) == 0 {
+		return detections
+	}
+
+	// Create detections with scores (assuming all have same score for simplicity)
+	type detection struct {
+		rect  image.Rectangle
+		score float32
+	}
+	var detectionsWithScore []detection
+	for _, rect := range detections {
+		detectionsWithScore = append(detectionsWithScore, detection{rect: rect, score: 1.0})
+	}
+
+	// Sort by score descending
+	sort.Slice(detectionsWithScore, func(i, j int) bool {
+		return detectionsWithScore[i].score > detectionsWithScore[j].score
+	})
+
+	result := []image.Rectangle{}
+	used := make([]bool, len(detectionsWithScore))
+
+	for i := 0; i < len(detectionsWithScore); i++ {
+		if used[i] {
+			continue
+		}
+
+		result = append(result, detectionsWithScore[i].rect)
+
+		for j := i + 1; j < len(detectionsWithScore); j++ {
+			if used[j] {
+				continue
+			}
+
+			if iou(detectionsWithScore[i].rect, detectionsWithScore[j].rect) > iouThreshold {
+				used[j] = true
+			}
+		}
+	}
+
+	return result
+}
+
+// Calculate Intersection over Union
+func iou(a, b image.Rectangle) float32 {
+	// Calculate intersection
+	x1 := float32(max(a.Min.X, b.Min.X))
+	y1 := float32(max(a.Min.Y, b.Min.Y))
+	x2 := float32(min(a.Max.X, b.Max.X))
+	y2 := float32(min(a.Max.Y, b.Max.Y))
+
+	if x2 <= x1 || y2 <= y1 {
+		return 0
+	}
+
+	intersection := (x2 - x1) * (y2 - y1)
+	areaA := float32((a.Max.X - a.Min.X) * (a.Max.Y - a.Min.Y))
+	areaB := float32((b.Max.X - b.Min.X) * (b.Max.Y - b.Min.Y))
+	union := areaA + areaB - intersection
+
+	return intersection / union
+}
 
 func writeSuccess(w http.ResponseWriter, statusCode int, data interface{}) {
 	response := models.APIResponse{

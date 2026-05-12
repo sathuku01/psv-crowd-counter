@@ -675,6 +675,24 @@ function stopCamera() {
     }
 
     isProcessing = false;
+    lastDetectionResult = null;
+
+    // Close WebSocket connection
+    if (wsConnection) {
+        wsConnection.close();
+        wsConnection = null;
+    }
+
+    // Clear the overlay canvas to remove drawings
+    // Set canvas dimensions to ensure clearRect works properly
+    if (overlayCanvas && overlayCtx) {
+        const parent = overlayCanvas.parentElement;
+        if (parent) {
+            overlayCanvas.width = parent.offsetWidth || 640;
+            overlayCanvas.height = parent.offsetHeight || 480;
+        }
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    }
 
     videoElement.style.display = 'none';
     document.getElementById('video-placeholder').style.display = 'block';

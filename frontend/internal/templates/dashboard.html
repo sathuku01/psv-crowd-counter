@@ -411,6 +411,7 @@ async function startCamera() {
         videoElement.srcObject = videoStream;
         
         videoElement.style.display = 'block';
+        overlayCanvas.style.display = 'block';
         document.getElementById('video-placeholder').style.display = 'none';
         
         document.getElementById('start-camera-btn').disabled = true;
@@ -444,6 +445,7 @@ function stopCamera() {
     }
     
     isProcessing = false;
+    lastDetectionResult = null; // Clear last detection result to prevent stale drawings
     
     // Close WebSocket connection
     if (wsConnection) {
@@ -451,11 +453,26 @@ function stopCamera() {
         wsConnection = null;
     }
     
+    // Clear the overlay canvas to remove drawings
+    // Set canvas dimensions to ensure clearRect works properly
+    if (overlayCanvas && overlayCtx) {
+        const parent = overlayCanvas.parentElement;
+        if (parent) {
+            overlayCanvas.width = parent.offsetWidth || 640;
+            overlayCanvas.height = parent.offsetHeight || 480;
+        }
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+    }
+    
+    // Hide video and overlay canvas
     videoElement.style.display = 'none';
+    videoElement.srcObject = null;
+    overlayCanvas.style.display = 'none';
     document.getElementById('video-placeholder').style.display = 'block';
     
     document.getElementById('start-camera-btn').disabled = false;
     document.getElementById('stop-camera-btn').disabled = true;
+    // Keep the stop button text as is - don't change to loading
     
     updateVideoStatus('Camera stopped');
 }
@@ -468,6 +485,7 @@ function handleVideoUpload(event) {
     const url = URL.createObjectURL(file);
     videoElement.src = url;
     videoElement.style.display = 'block';
+    overlayCanvas.style.display = 'block';
     document.getElementById('video-placeholder').style.display = 'none';
     
     updateVideoStatus('Video loaded: ' + file.name);

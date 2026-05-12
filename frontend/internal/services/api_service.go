@@ -63,100 +63,178 @@ func (s *APIService) GetCrowdDetectURL() string {
 	return s.crowdDetectURL
 }
 
-// GetReports fetches all reports from the backend
+// GetReports fetches all reports from the backend with retry logic
 func (s *APIService) GetReports() ([]models.Report, error) {
 	url := fmt.Sprintf("%s/reports", s.baseURL)
 
-	resp, err := s.httpClient.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch reports: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("backend returned status %d", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	// API returns wrapped response: {"success": true, "data": [...], "meta": {...}}
-	var apiResponse struct {
-		Success bool            `json:"success"`
-		Data    json.RawMessage `json:"data"`
-		Error   *struct {
-			Code    string `json:"code"`
-			Message string `json:"message"`
-		} `json:"error,omitempty"`
-	}
-
-	if err := json.Unmarshal(body, &apiResponse); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal API response: %w", err)
-	}
-
-	if !apiResponse.Success {
-		if apiResponse.Error != nil {
-			return nil, fmt.Errorf("API error: %s - %s", apiResponse.Error.Code, apiResponse.Error.Message)
+	var lastError error
+	// Try up to 3 times with exponential backoff
+	for attempt := 0; attempt < 3; attempt++ {
+		resp, err := s.httpClient.Get(url)
+		if err != nil {
+			lastError = fmt.Errorf("failed to fetch reports (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
 		}
-		return nil, fmt.Errorf("API returned unsuccessful response")
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			lastError = fmt.Errorf("backend returned status %d (attempt %d)", resp.StatusCode, attempt+1)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			lastError = fmt.Errorf("failed to read response body (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		// API returns wrapped response: {"success": true, "data": [...], "meta": {...}}
+		var apiResponse struct {
+			Success bool            `json:"success"`
+			Data    json.RawMessage `json:"data"`
+			Error   *struct {
+				Code    string `json:"code"`
+				Message string `json:"message"`
+			} `json:"error,omitempty"`
+		}
+
+		if err := json.Unmarshal(body, &apiResponse); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal API response (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		if !apiResponse.Success {
+			if apiResponse.Error != nil {
+				lastError = fmt.Errorf("API error: %s - %s (attempt %d)", apiResponse.Error.Code, apiResponse.Error.Message, attempt+1)
+			} else {
+				lastError = fmt.Errorf("API returned unsuccessful response (attempt %d)", attempt+1)
+			}
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		var reports []models.Report
+		if err := json.Unmarshal(apiResponse.Data, &reports); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal reports (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		// Success! Return the reports
+		return reports, nil
 	}
 
-	var reports []models.Report
-	if err := json.Unmarshal(apiResponse.Data, &reports); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal reports: %w", err)
-	}
-
-	return reports, nil
+	// All attempts failed
+	return nil, lastError
 }
 
-// GetHealth checks the backend health status
+// GetHealth checks the backend health status with retry logic
 func (s *APIService) GetHealth() (map[string]interface{}, error) {
 	url := fmt.Sprintf("%s/health", s.baseURL)
 
-	resp, err := s.httpClient.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to check health: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("backend returned status %d", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	// API returns wrapped response: {"success": true, "data": {...}, "meta": {...}}
-	var apiResponse struct {
-		Success bool            `json:"success"`
-		Data    json.RawMessage `json:"data"`
-		Error   *struct {
-			Code    string `json:"code"`
-			Message string `json:"message"`
-		} `json:"error,omitempty"`
-	}
-
-	if err := json.Unmarshal(body, &apiResponse); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal API response: %w", err)
-	}
-
-	if !apiResponse.Success {
-		if apiResponse.Error != nil {
-			return nil, fmt.Errorf("API error: %s - %s", apiResponse.Error.Code, apiResponse.Error.Message)
+	var lastError error
+	// Try up to 3 times with exponential backoff
+	for attempt := 0; attempt < 3; attempt++ {
+		resp, err := s.httpClient.Get(url)
+		if err != nil {
+			lastError = fmt.Errorf("failed to check health (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
 		}
-		return nil, fmt.Errorf("API returned unsuccessful response")
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			lastError = fmt.Errorf("backend returned status %d (attempt %d)", resp.StatusCode, attempt+1)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			lastError = fmt.Errorf("failed to read response body (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		// API returns wrapped response: {"success": true, "data": {...}, "meta": {...}}
+		var apiResponse struct {
+			Success bool            `json:"success"`
+			Data    json.RawMessage `json:"data"`
+			Error   *struct {
+				Code    string `json:"code"`
+				Message string `json:"message"`
+			} `json:"error,omitempty"`
+		}
+
+		if err := json.Unmarshal(body, &apiResponse); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal API response (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		if !apiResponse.Success {
+			if apiResponse.Error != nil {
+				lastError = fmt.Errorf("API error: %s - %s (attempt %d)", apiResponse.Error.Code, apiResponse.Error.Message, attempt+1)
+			} else {
+				lastError = fmt.Errorf("API returned unsuccessful response (attempt %d)", attempt+1)
+			}
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		var health map[string]interface{}
+		if err := json.Unmarshal(apiResponse.Data, &health); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal health (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		// Success! Return the health
+		return health, nil
 	}
 
-	var health map[string]interface{}
-	if err := json.Unmarshal(apiResponse.Data, &health); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal health: %w", err)
-	}
-
-	return health, nil
+	// All attempts failed
+	return nil, lastError
 }
 
 // GetDashboardData fetches and processes data for the dashboard
@@ -218,72 +296,111 @@ func (s *APIService) GetDashboardData() (*models.DashboardData, error) {
 	}, nil
 }
 
-// GetAnalyticsData fetches and processes analytics data from the backend
+// GetAnalyticsData fetches and processes analytics data from the backend with retry logic
 func (s *APIService) GetAnalyticsData() (*models.AnalyticsData, error) {
 	url := fmt.Sprintf("%s/api/v1/analytics", s.baseURL)
 
-	resp, err := s.httpClient.Get(url)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch analytics: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("backend returned status %d", resp.StatusCode)
-	}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	// API returns wrapped response: {"success": true, "data": {...}, "meta": {...}}
-	var apiResponse struct {
-		Success bool            `json:"success"`
-		Data    json.RawMessage `json:"data"`
-		Error   *struct {
-			Code    string `json:"code"`
-			Message string `json:"message"`
-		} `json:"error,omitempty"`
-	}
-
-	if err := json.Unmarshal(body, &apiResponse); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal API response: %w", err)
-	}
-
-	if !apiResponse.Success {
-		if apiResponse.Error != nil {
-			return nil, fmt.Errorf("API error: %s - %s", apiResponse.Error.Code, apiResponse.Error.Message)
+	var lastError error
+	// Try up to 3 times with exponential backoff
+	for attempt := 0; attempt < 3; attempt++ {
+		resp, err := s.httpClient.Get(url)
+		if err != nil {
+			lastError = fmt.Errorf("failed to fetch analytics (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
 		}
-		return nil, fmt.Errorf("API returned unsuccessful response")
-	}
+		defer resp.Body.Close()
 
-	var analytics models.AnalyticsData
-	if err := json.Unmarshal(apiResponse.Data, &analytics); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal analytics: %w", err)
-	}
-
-	// Calculate max hourly count for chart scaling
-	maxCount := 0
-	for _, count := range analytics.HourlyDistribution {
-		if count > maxCount {
-			maxCount = count
+		if resp.StatusCode != http.StatusOK {
+			lastError = fmt.Errorf("backend returned status %d (attempt %d)", resp.StatusCode, attempt+1)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
 		}
-	}
-	analytics.MaxHourlyCount = maxCount
 
-	// Get recent reports (last 10)
-	reports, err := s.GetReports()
-	if err == nil && len(reports) > 0 {
-		recentReports := reports
-		if len(recentReports) > 10 {
-			recentReports = recentReports[len(recentReports)-10:]
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			lastError = fmt.Errorf("failed to read response body (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
 		}
-		analytics.RecentReports = recentReports
+
+		// API returns wrapped response: {"success": true, "data": {...}, "meta": {...}}
+		var apiResponse struct {
+			Success bool            `json:"success"`
+			Data    json.RawMessage `json:"data"`
+			Error   *struct {
+				Code    string `json:"code"`
+				Message string `json:"message"`
+			} `json:"error,omitempty"`
+		}
+
+		if err := json.Unmarshal(body, &apiResponse); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal API response (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		if !apiResponse.Success {
+			if apiResponse.Error != nil {
+				lastError = fmt.Errorf("API error: %s - %s (attempt %d)", apiResponse.Error.Code, apiResponse.Error.Message, attempt+1)
+			} else {
+				lastError = fmt.Errorf("API returned unsuccessful response (attempt %d)", attempt+1)
+			}
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		var analytics models.AnalyticsData
+		if err := json.Unmarshal(apiResponse.Data, &analytics); err != nil {
+			lastError = fmt.Errorf("failed to unmarshal analytics (attempt %d): %w", attempt+1, err)
+			// Wait before retrying (except on last attempt)
+			if attempt < 2 {
+				time.Sleep(time.Duration(attempt+1) * time.Second)
+			}
+			continue
+		}
+
+		// Calculate max hourly count for chart scaling
+		maxCount := 0
+		for _, count := range analytics.HourlyDistribution {
+			if count > maxCount {
+				maxCount = count
+			}
+		}
+		analytics.MaxHourlyCount = maxCount
+
+		// Get recent reports (last 10)
+		reports, err := s.GetReports()
+		if err == nil && len(reports) > 0 {
+			recentReports := reports
+			if len(recentReports) > 10 {
+				recentReports = recentReports[len(recentReports)-10:]
+			}
+			analytics.RecentReports = recentReports
+		}
+
+		// Set last updated time
+		analytics.LastUpdated = time.Now()
+
+		// Success! Return the analytics
+		return &analytics, nil
 	}
 
-	// Set last updated time
-	analytics.LastUpdated = time.Now()
-
-	return &analytics, nil
+	// All attempts failed
+	return nil, lastError
 }

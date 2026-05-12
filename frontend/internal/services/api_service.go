@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"psv-crowd-counter/frontend/internal/models"
@@ -24,6 +25,12 @@ func NewAPIService() *APIService {
 	baseURL := os.Getenv("BACKEND_API_URL")
 	if baseURL == "" {
 		baseURL = "http://localhost:8080" // Default backend URL
+	} else {
+		// If BACKEND_API_URL is set from service discovery (just hostname),
+		// construct the full URL with protocol and port
+		if !strings.HasPrefix(baseURL, "http://") && !strings.HasPrefix(baseURL, "https://") {
+			baseURL = "http://" + baseURL + ":8080"
+		}
 	}
 
 	mediaPipeURL := os.Getenv("MEDIAPIPE_URL")
